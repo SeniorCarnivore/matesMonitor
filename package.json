@@ -1,0 +1,32 @@
+{
+  "name": "matesmonitor",
+  "version": "1.0.0",
+  "description": "monitor mates activity",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeniorCarnivore/matesMonitor.git"
+  },
+  "author": "seniorcarnivore@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeniorCarnivore/matesMonitor/issues"
+  },
+  "homepage": "https://github.com/SeniorCarnivore/matesMonitor#readme",
+  "dependencies": {
+    "babel-preset-stage-2": "^6.24.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router": "^4.2.0",
+    "styled-components": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "parcel-bundler": "^1.3.1"
+  }
+}

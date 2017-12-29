@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Господин",
+    "surname": "Лайонел",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }, {
+    "id": 2,
+    "name": "Господин",
+    "surname": "Горацио",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }, {
+    "id": 3,
+    "name": "Господин",
+    "surname": "Вацлав",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }, {
+    "id": 4,
+    "name": "Господин",
+    "surname": "Этельвольф",
+    "abilities": ["ab1", "ab2", "ab3"]
+  },{
+    "id": 5,
+    "name": "Господин",
+    "surname": "Леопольд",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }, {
+    "id": 6,
+    "name": "Господин",
+    "surname": "Вольдемар",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }, {
+    "id": 7,
+    "name": "Господин",
+    "surname": "Рудольф",
+    "abilities": ["ab1", "ab2", "ab3"]
+  }
+]
