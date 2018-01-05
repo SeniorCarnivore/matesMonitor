@@ -12,33 +12,51 @@ const Container = styled.div`
 
 export default class MatesList extends Component {
   static propTypes = {
-    data: arrayOf(object)
+    mates: arrayOf(object),
+    filter: object
   }
   
   static defaultProps = {
-    data: []
+    mates: [],
+    filter: null
   }
 
   state = {
-    data: this.props.data
+    mates: this.props.mates
   }
 
-  parseMates = (mates) => {
-    const layout = mates.map(
+  filterMates = (mates, filter) => {
+    const keys = filter && Object.keys(filter);
+    const activeFilters = keys && keys.filter(key => filter[key]);
+
+    let filteredMates = mates;
+
+    if (activeFilters && activeFilters.length) {
+      filteredMates = mates.filter(
+        mate => activeFilters.every(filter => 
+          mate.skills.indexOf(filter) >= 0
+        )
+      );
+    }
+
+    return this.parseMates(filteredMates);
+  }
+
+  parseMates = (mates) => (
+    mates.map(
       (mate) => <Mate key={ mate.id } data={ mate }/>
-    );
-
-    return layout;
-  }
+    )
+  )
 
   render() {
     const {
-      data
-    } = this.state;
+      mates,
+      filter
+    } = this.props;
 
     return (
       <Container>
-        { this.parseMates(data) }
+        { this.filterMates(mates, filter) }
       </Container>
     );
   }
