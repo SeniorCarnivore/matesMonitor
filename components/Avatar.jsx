@@ -10,7 +10,7 @@ const Container = styled.div`
   height: 50px;
   margin-right: 10px;
   border-radius: 51%;
-  background-color: #333;
+  background-color: #e6e6e6;
   background-image: ${ props => props.url };
   color: ${ props => props.url ? 'transparent' : '#000' };
 `;

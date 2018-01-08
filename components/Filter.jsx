@@ -2,16 +2,36 @@ import React, { Component } from 'react';
 import { array } from 'prop-types';
 import styled from 'styled-components';
 
+import AddItem from './AddItem';
+
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
 `;
 
 const SkillsList = styled.ul`
   display: block;
   width: 100%;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
+  padding: 0;
   font-size: 18px;
   list-style: none;
+`;
+
+const Skill = styled.li`
+  display: flex;
+  align-items: center;
+  user-select: none;
+`;
+
+const Checkbox = styled.input`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`;
+
+const Label = styled.label`
+  cursor: pointer;
 `;
 
 export default class Filter extends Component {
@@ -21,16 +41,16 @@ export default class Filter extends Component {
 
   rederFilter = (skills) => (
     skills.map((skill, id) => 
-      <li key={ id }>
-        <input
+      <Skill key={ id }>
+        <Checkbox
           id={ `skill${ id }` }
           type='checkbox'
           value={ skill }
           onChange={ (e) => this.handleChange(e) }
         />
 
-        <label htmlFor={ `skill${ id }` } >{ skill }</label>
-      </li>
+        <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
+      </Skill>
     )
   )
 
@@ -58,6 +78,9 @@ export default class Filter extends Component {
         <SkillsList >
           { this.rederFilter(skills) }
         </SkillsList>
+
+        <AddItem/>
+
       </Container>
     );
   }

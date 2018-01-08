@@ -25,7 +25,7 @@ export default class MatesList extends Component {
     mates: this.props.mates
   }
 
-  filterMates = (mates, filter) => {
+  filterMates = (mates, filter, callback) => {
     const keys = filter && Object.keys(filter);
     const activeFilters = keys && keys.filter(key => filter[key]);
 
@@ -39,24 +39,29 @@ export default class MatesList extends Component {
       );
     }
 
-    return this.parseMates(filteredMates);
+    return this.parseMates(filteredMates, callback);
   }
 
-  parseMates = (mates) => (
+  parseMates = (mates, callback) => (
     mates.map(
-      (mate) => <Mate key={ mate.id } data={ mate }/>
+      (mate) => <Mate
+                  key={ mate.id }
+                  data={ mate }
+                  callback={ callback }
+                />
     )
   )
 
   render() {
     const {
       mates,
-      filter
+      filter,
+      callback
     } = this.props;
 
     return (
       <Container>
-        { this.filterMates(mates, filter) }
+        { this.filterMates(mates, filter, callback) }
       </Container>
     );
   }

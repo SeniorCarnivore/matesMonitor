@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Filter from './Filter';
 import MatesList from './MatesList';
+import Details from './Details';
 
 import mates from '../mates.json';
 import skills from '../skills.json';
@@ -21,6 +22,17 @@ const Sidebar = styled.div`
 `;
 
 export default class App extends Component {
+  // static propTypes = {
+  //   mateDetails: number
+  // }
+  
+  // static defaultProps = {
+  //   mateDetails: 0
+  // }
+
+  state = {
+    mateDetails: 1
+  }
 
   componentWillMount() {
     const matesStorage = localStorage.getItem('mates');
@@ -48,11 +60,28 @@ export default class App extends Component {
     });
   }
 
+  setMateDetails = (id) => {
+    this.setState({
+      mateDetails: id
+    });
+  }
+
+  getMateDetails = (id) => {
+    const {
+      mates
+    } = this.state;
+
+    const mateDetails = mates.find(mate => mate.id === id);
+
+    return mateDetails;
+  }
+
   render() {
     const {
       skills,
       mates,
-      filter
+      filter,
+      mateDetails
     } = this.state;
 
     return (
@@ -67,8 +96,14 @@ export default class App extends Component {
           <MatesList
             mates={ mates }
             filter={ filter }
+            callback={ this.setMateDetails }
           />
+
         </Sidebar>
+
+        <Details
+          data={ this.getMateDetails(mateDetails) }
+        />
       </Container>
     );
   }

@@ -20,15 +20,25 @@ export default class Mate extends Component {
     data: object
   }
 
+  handleClick = (id) => {
+    const {
+      callback
+    } = this.props;
+
+    callback(id);
+  }
+
   render() {
     const {
       id,
       name,
       surname
     } = this.props.data;
-
+ 
     return (
-      <Container>
+      <Container
+        onClick={ () => this.handleClick(id) }
+      >
         <Avatar
           name={ name }
           surname={ surname }
