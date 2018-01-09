@@ -25,6 +25,22 @@ export default class AddItem extends PureComponent {
     });
   }
 
+  handleSubmit = () => {
+    const {
+      value
+    } = this.state;
+
+    const {
+      callback
+    } = this.props;
+
+    callback(value);
+
+    this.setState({
+      value: ''
+    });
+  }
+
   render() {
     const {
       value
@@ -36,7 +52,7 @@ export default class AddItem extends PureComponent {
           value={ value }
           onChange = { (e) => this.handleChange(e.target.value) }
         />
-        <Submit>Add</Submit>
+        <Submit onClick={ this.handleSubmit } >Add</Submit>
       </Container>
     );
   }

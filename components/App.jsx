@@ -5,8 +5,8 @@ import Filter from './Filter';
 import MatesList from './MatesList';
 import Details from './Details';
 
-import mates from '../mates.json';
-import skills from '../skills.json';
+import RESPONSED_MATES from '../mates.json';
+import RESPONSED_SKILLS from '../skills.json';
 
 const Container = styled.div`
   display: flex;
@@ -22,14 +22,6 @@ const Sidebar = styled.div`
 `;
 
 export default class App extends Component {
-  // static propTypes = {
-  //   mateDetails: number
-  // }
-  
-  // static defaultProps = {
-  //   mateDetails: 0
-  // }
-
   state = {
     mateDetails: 1
   }
@@ -39,16 +31,20 @@ export default class App extends Component {
     const skillsStorage = localStorage.getItem('skills');
     
     if (!matesStorage) {
-      this.setState({
-        mates: mates
-      });
+      localStorage.setItem('mates', JSON.stringify(RESPONSED_MATES));
     }
 
     if (!skillsStorage) {
-      this.setState({
-        skills: skills
-      });
+      localStorage.setItem('skills', JSON.stringify(RESPONSED_SKILLS));
     }
+
+    this.setState({
+      mates: JSON.parse(matesStorage)
+    });
+
+    this.setState({
+      skills: JSON.parse(skillsStorage)
+    });
   }
 
   setFilter = (skill, checked) => {
@@ -58,6 +54,22 @@ export default class App extends Component {
     this.setState({
       filter: filterStamp
     });
+  }
+
+  addFilter = (newSkill) => {
+    const {
+      skills
+    } = this.state;
+
+    if (skills.indexOf(newSkill) < 0) {
+      skills.push(newSkill);
+
+      this.setState({
+        skills: skills
+      });
+
+      localStorage.setItem('skills', JSON.stringify(skills));
+    }
   }
 
   setMateDetails = (id) => {
@@ -90,7 +102,8 @@ export default class App extends Component {
 
           <Filter
             skills={ skills }
-            callback={ this.setFilter }
+            callbackSet={ this.setFilter }
+            callbackAdd={ this.addFilter }
           />
 
           <MatesList

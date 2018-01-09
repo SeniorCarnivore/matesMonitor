@@ -56,7 +56,7 @@ export default class Filter extends Component {
 
   handleChange = (e) => {
     const {
-      callback
+      callbackSet
     } = this.props;
 
     const {
@@ -64,13 +64,13 @@ export default class Filter extends Component {
       checked
     } = e.target;
 
-    callback(value, checked);
+    callbackSet(value, checked);
   }
 
   render() {
     const {
       skills,
-      callback
+      callbackAdd
     } = this.props;
 
     return (
@@ -79,7 +79,9 @@ export default class Filter extends Component {
           { this.rederFilter(skills) }
         </SkillsList>
 
-        <AddItem/>
+        <AddItem
+          callback={ callbackAdd }
+        />
 
       </Container>
     );
