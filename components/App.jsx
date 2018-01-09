@@ -1,5 +1,7 @@
+import 'babel-polyfill';
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { number, array } from 'prop-types';
 
 import Filter from './Filter';
 import MatesList from './MatesList';
@@ -21,30 +23,56 @@ const Sidebar = styled.div`
   background-color: #999;
 `;
 
+const DropFilter = styled.button`
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+  font-size: 20px;
+`;
+
+const DropApp = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 9px 1px 6px;
+  font-size: 20px;
+  text-align: center;
+  border: 0;
+  background-color: #ff9d9d;
+  cursor: cell;
+`;
+
 export default class App extends Component {
+  static propTypes = {
+    mateDetails: number,
+    mates: array,
+    skills: array,
+    excludedMates: array
+  }
+
   state = {
-    mateDetails: 1
+    mateDetails: 1,
+    excludedMates: [],
+    mates: JSON.parse(localStorage.getItem('mates')) || null,
+    skills: JSON.parse(localStorage.getItem('skills')) || []
   }
 
   componentWillMount() {
-    const matesStorage = localStorage.getItem('mates');
-    const skillsStorage = localStorage.getItem('skills');
-    
-    if (!matesStorage) {
+    if (!this.state.mates || !this.state.mates.length) {
       localStorage.setItem('mates', JSON.stringify(RESPONSED_MATES));
+
+      this.setState({
+        mates: RESPONSED_MATES
+      });
     }
 
-    if (!skillsStorage) {
+    if (!this.state.skills || !this.state.skills.length) {
       localStorage.setItem('skills', JSON.stringify(RESPONSED_SKILLS));
+
+      this.setState({
+        skills: RESPONSED_SKILLS
+      });
     }
-
-    this.setState({
-      mates: JSON.parse(matesStorage)
-    });
-
-    this.setState({
-      skills: JSON.parse(skillsStorage)
-    });
   }
 
   setFilter = (skill, checked) => {
@@ -72,20 +100,93 @@ export default class App extends Component {
     }
   }
 
+  addSkill = (skill) => {
+    const {
+      mates,
+      mateDetails,
+      skills
+    } = this.state;
+
+    const updatedMates = mates.map(mate => {
+      if (mate.id === mateDetails) {
+        mate.skills.push(skill);
+      }
+
+      return mate;
+    });
+
+    this.setState({
+      mates: updatedMates
+    });
+
+    localStorage.setItem('mates', JSON.stringify(updatedMates));
+
+    this.addFilter(skill);
+  }
+
   setMateDetails = (id) => {
     this.setState({
       mateDetails: id
     });
   }
 
-  getMateDetails = (id) => {
+  getMateDetails = () => {
     const {
-      mates
+      mates,
+      mateDetails
     } = this.state;
 
-    const mateDetails = mates.find(mate => mate.id === id);
+    const details = mates.find(mate => mate.id === mateDetails);
 
-    return mateDetails;
+    return details;
+  }
+
+  determineMate = (id, accept) => {
+    const {
+      mates,
+      excludedMates
+    } = this.state;
+
+    let updatedMates = mates;
+
+    if (accept) {
+      updatedMates = mates.map(mate => {
+        if (mate.id === id) {
+          mate.rating += 1;
+        }
+  
+        return mate;
+      });
+  
+      this.setState({
+        mates: updatedMates
+      });
+  
+      localStorage.setItem('mates', JSON.stringify(updatedMates));
+
+      this.dropFilter();
+
+    } else {
+  
+      const newExclusion = excludedMates;
+      newExclusion.push(id);
+
+      this.setState({
+        excludedMates: newExclusion
+      });
+    }
+  }
+
+  dropFilter = () => {
+    this.setState({
+      filter: null,
+      excludedMates: []
+    })
+  }
+
+  dropApp = () => {
+    localStorage.clear();
+    document.location.reload();
   }
 
   render() {
@@ -93,30 +194,47 @@ export default class App extends Component {
       skills,
       mates,
       filter,
-      mateDetails
+      mateDetails,
+      excludedMates
     } = this.state;
 
     return (
       <Container> 
         <Sidebar>
 
-          <Filter
-            skills={ skills }
-            callbackSet={ this.setFilter }
-            callbackAdd={ this.addFilter }
-          />
+          {
+            skills &&
+            <Filter
+              skills={ skills }
+              callbackSet={ this.setFilter }
+              callbackAdd={ this.addFilter }
+            />
+          }
 
-          <MatesList
-            mates={ mates }
-            filter={ filter }
-            callback={ this.setMateDetails }
-          />
+          {
+            mates &&
+            <MatesList
+              mates={ mates }
+              filter={ filter }
+              excludedMates={ excludedMates }
+              determineMate={ this.determineMate }
+              callback={ this.setMateDetails }
+            />
+          }
+          
+          <DropFilter onClick={ this.dropFilter }>💥 Drop Filter 💥</DropFilter>
 
         </Sidebar>
 
-        <Details
-          data={ this.getMateDetails(mateDetails) }
-        />
+        {
+          mates &&
+          <Details
+            data={ this.getMateDetails() }
+            callback={ this.addSkill }
+          />
+        }
+
+        <DropApp onClick={ this.dropApp }>💀</DropApp>
       </Container>
     );
   }

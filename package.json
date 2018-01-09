@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/SeniorCarnivore/matesMonitor#readme",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "babel-preset-stage-2": "^6.24.1",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",

@@ -25,7 +25,7 @@ export default class MatesList extends Component {
     mates: this.props.mates
   }
 
-  filterMates = (mates, filter, callback) => {
+  filterMates = (mates, filter, excludedMates, callback, determineMate) => {
     const keys = filter && Object.keys(filter);
     const activeFilters = keys && keys.filter(key => filter[key]);
 
@@ -33,21 +33,37 @@ export default class MatesList extends Component {
 
     if (activeFilters && activeFilters.length) {
       filteredMates = mates.filter(
-        mate => activeFilters.every(filter => 
-          mate.skills.indexOf(filter) >= 0
+        mate => activeFilters.every(filterParam => 
+          mate.skills.indexOf(filterParam) >= 0
         )
       );
     }
 
-    return this.parseMates(filteredMates, callback);
+    if (excludedMates && excludedMates.length) {
+
+      filteredMates = filteredMates.filter(
+        mate => excludedMates.every(id =>
+          mate.id !== id
+        )
+      );
+    }
+
+    const sortedMates = filteredMates.sort((a, b) => ( 
+      a.id + b.id
+    ));
+
+    return this.parseMates(sortedMates, callback, activeFilters, determineMate);
   }
 
-  parseMates = (mates, callback) => (
+  parseMates = (mates, callback, activeFilters, determineMate) => (
+    
     mates.map(
       (mate) => <Mate
                   key={ mate.id }
                   data={ mate }
+                  filtered={ activeFilters && activeFilters.length }
                   callback={ callback }
+                  determineMate={ determineMate }
                 />
     )
   )
@@ -56,12 +72,14 @@ export default class MatesList extends Component {
     const {
       mates,
       filter,
-      callback
+      callback,
+      determineMate,
+      excludedMates
     } = this.props;
 
     return (
       <Container>
-        { this.filterMates(mates, filter, callback) }
+          { this.filterMates(mates, filter, excludedMates, callback, determineMate) }
       </Container>
     );
   }

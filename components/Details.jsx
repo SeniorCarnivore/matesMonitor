@@ -41,11 +41,18 @@ export default class Details extends Component {
   )
 
   render() {
+
+    const {
+      data,
+      callback
+    } = this.props;
+
     const {
       name,
       surname,
-      skills
-    } = this.props.data;
+      skills,
+      rating
+    } = data;
 
     return (
       <Container>
@@ -56,12 +63,14 @@ export default class Details extends Component {
             surname={ surname }
             url=''
           />
-          { `${ name } ${ surname }` }
+          { `${ name } ${ surname } (${ rating })` }
         </DetailsBlock>
         
         { this.renderSkillset(skills) }
 
-        <AddItem/>
+        <AddItem
+          callback={ callback }
+        />
 
       </Container>
     );

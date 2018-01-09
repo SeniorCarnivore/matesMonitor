@@ -11,9 +11,31 @@ const Container = styled.div`
   padding: 5px;
   box-sizing: border-box;
   background-color: #666;
+`;
+
+const Identity = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
   cursor: pointer;
 `;
 
+const RatingPanel = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  color: #fff;
+`;
+
+const Control = styled.button`
+  margin-top: ${props => props.left ? '-5px' : '5px'};
+  border: 0;
+  padding: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+`;
 
 export default class Mate extends Component {
   static propTypes = {
@@ -28,23 +50,49 @@ export default class Mate extends Component {
     callback(id);
   }
 
+  handleDetermination(id, determination) {
+    const {
+      determineMate
+    } = this.props;
+
+    determineMate(id, determination);
+  }
+
   render() {
+    const {
+      data,
+      filtered
+    } = this.props;
+
     const {
       id,
       name,
-      surname
-    } = this.props.data;
- 
+      surname,
+      rating
+    } = data;
+
     return (
-      <Container
-        onClick={ () => this.handleClick(id) }
-      >
-        <Avatar
-          name={ name }
-          surname={ surname }
-          url=''
-        />
-        { `${ name } ${ surname }` }
+      <Container>
+        <Identity onClick={ () => this.handleClick(id) } >
+          <Avatar
+            name={ name }
+            surname={ surname }
+            url=''
+          />
+
+          <span>
+            { `${ name } ${ surname }` }
+          </span>
+        </Identity>
+
+        {
+          filtered &&
+          <RatingPanel>
+            <Control onClick={ () => this.handleDetermination(id, true) } left>👍🏻</Control>
+            ({ rating })
+            <Control onClick={ () => this.handleDetermination(id) } >👎🏻</Control>
+          </RatingPanel>
+        }
       </Container>
     );
   }

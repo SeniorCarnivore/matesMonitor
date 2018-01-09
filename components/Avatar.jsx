@@ -36,7 +36,11 @@ export default class Avatar extends Component {
     return (
       <Container>
         <span>
-          { this.createInitials(name, surname) }
+          {
+            name &&
+            surname &&
+            this.createInitials(name, surname)
+          }
         </span>
       </Container>
     );

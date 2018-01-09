@@ -3,36 +3,43 @@
     "id": 1,
     "name": "Господин",
     "surname": "Лайонел",
-    "skills": ["react", "angular", "keyframe"]
+    "skills": ["react", "angular", "keyframe"],
+    "rating": 0
   }, {
     "id": 2,
     "name": "Господин",
     "surname": "Горацио",
-    "skills": ["angular", "angular4"]
+    "skills": ["angular", "angular4"],
+    "rating": 0
   }, {
     "id": 3,
     "name": "Господин",
     "surname": "Вацлав",
-    "skills": ["vue", "vanilla", "keyframe"]
+    "skills": ["vue", "vanilla", "keyframe"],
+    "rating": 0
   }, {
     "id": 4,
     "name": "Господин",
     "surname": "Этельвольф",
-    "skills": ["react", "angular", "vue"]
+    "skills": ["react", "angular", "vue"],
+    "rating": 0
   },{
     "id": 5,
     "name": "Господин",
     "surname": "Леопольд",
-    "skills": ["react", "angular4", "keyframe"]
+    "skills": ["react", "angular4", "keyframe"],
+    "rating": 0
   }, {
     "id": 6,
     "name": "Господин",
     "surname": "Вольдемар",
-    "skills": ["react", "angular", "vue", "keyframe"]
+    "skills": ["react", "angular", "vue", "keyframe"],
+    "rating": 0
   }, {
     "id": 7,
     "name": "Господин",
     "surname": "Рудольф",
-    "skills": ["angular", "vue", "vanilla", "angular4"]
+    "skills": ["angular", "vue", "vanilla", "angular4"],
+    "rating": 0
   }
 ]
