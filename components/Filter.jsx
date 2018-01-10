@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { array, func } from 'prop-types';
 import styled from 'styled-components';
 
 import AddItem from './AddItem';
@@ -36,7 +36,8 @@ const Label = styled.label`
 
 export default class Filter extends Component {
   static propTypes = {
-    data: array
+    skills: array,
+    callbackAdd: func
   }
 
   rederFilter = (skills) => (
@@ -75,7 +76,7 @@ export default class Filter extends Component {
 
     return (
       <Container>
-        <SkillsList >
+        <SkillsList>
           { this.rederFilter(skills) }
         </SkillsList>
 

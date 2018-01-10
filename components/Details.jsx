@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, func } from 'prop-types';
 import styled from 'styled-components';
 
 import Avatar from './Avatar';
@@ -29,7 +29,8 @@ const SkillSet = styled.ul`
 
 export default class Details extends Component {
   static propTypes = {
-    data: object
+    data: object,
+    callback: func
   }
 
   renderSkillset = (skills) => (

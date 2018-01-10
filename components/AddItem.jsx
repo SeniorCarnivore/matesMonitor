@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { func } from 'prop-types';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -15,8 +16,8 @@ const Submit = styled.button`
 `;
 
 export default class AddItem extends PureComponent {
-  state = {
-    value: ''
+  static propTypes = {
+    callback: func
   }
 
   handleChange = (value) => {
@@ -42,9 +43,7 @@ export default class AddItem extends PureComponent {
   }
 
   render() {
-    const {
-      value
-    } = this.state;
+    const value = this.state ? his.state.value : '';
 
     return (
       <Container>

@@ -43,12 +43,6 @@ const DropApp = styled.button`
 `;
 
 export default class App extends Component {
-  static propTypes = {
-    mateDetails: number,
-    mates: array,
-    skills: array,
-    excludedMates: array
-  }
 
   state = {
     mateDetails: 1,
@@ -200,6 +194,7 @@ export default class App extends Component {
 
     return (
       <Container> 
+
         <Sidebar>
 
           {

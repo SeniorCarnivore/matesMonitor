@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, object } from 'prop-types';
+import { array, arrayOf, object, func } from 'prop-types';
 import styled from 'styled-components';
 
 import Mate from './Mate';
@@ -13,12 +13,10 @@ const Container = styled.div`
 export default class MatesList extends Component {
   static propTypes = {
     mates: arrayOf(object),
-    filter: object
-  }
-  
-  static defaultProps = {
-    mates: [],
-    filter: null
+    filter: object,
+    callback: func,
+    determineMate: func,
+    excludedMates: array
   }
 
   state = {
@@ -48,7 +46,7 @@ export default class MatesList extends Component {
       );
     }
 
-    filteredMates = filteredMates.sort((a, b) => a.id + b.id);
+    filteredMates = filteredMates.sort((a, b) => a.rating - b.rating);
 
     return this.parseMates(filteredMates, callback, activeFilters, determineMate);
   }

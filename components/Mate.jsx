@@ -85,8 +85,8 @@ export default class Mate extends Component {
           </span>
         </Identity>
 
-        {
-          filtered &&
+        { 
+          filtered > 0 &&
           <RatingPanel>
             <Control onClick={ () => this.handleDetermination(id, true) } left>👍🏻</Control>
             ({ rating })
