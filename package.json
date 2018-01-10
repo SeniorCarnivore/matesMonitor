@@ -4,7 +4,8 @@
   "description": "monitor mates activity",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html -d docs"
+    "start": "parcel index.html -d docs",
+    "prod": "parcel build index.js -d docs"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/SeniorCarnivore/matesMonitor#readme",
   "dependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-polyfill": "^6.26.0",
     "babel-preset-stage-2": "^6.24.1",
     "prop-types": "^15.6.0",
