@@ -4,7 +4,7 @@
   "description": "monitor mates activity",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html -d docs"
   },
   "repository": {
     "type": "git",

@@ -48,17 +48,14 @@ export default class MatesList extends Component {
       );
     }
 
-    const sortedMates = filteredMates.sort((a, b) => ( 
-      a.id + b.id
-    ));
+    filteredMates = filteredMates.sort((a, b) => a.id + b.id);
 
-    return this.parseMates(sortedMates, callback, activeFilters, determineMate);
+    return this.parseMates(filteredMates, callback, activeFilters, determineMate);
   }
 
   parseMates = (mates, callback, activeFilters, determineMate) => (
-    
     mates.map(
-      (mate) => <Mate
+      mate => <Mate
                   key={ mate.id }
                   data={ mate }
                   filtered={ activeFilters && activeFilters.length }
