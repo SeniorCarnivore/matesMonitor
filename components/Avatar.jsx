@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { string } from 'prop-types';
 import styled from 'styled-components';
 
@@ -16,7 +16,7 @@ const Container = styled.div`
 `;
 
 const Avatar = ({name, surname, url}) => 
-  <Container>
+  <Container url={ url }>
     <span>
       {
         name &&

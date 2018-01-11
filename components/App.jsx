@@ -43,7 +43,6 @@ const DropApp = styled.button`
 `;
 
 export default class App extends Component {
-
   state = {
     mateDetails: 1,
     excludedMates: [],
@@ -171,6 +170,59 @@ export default class App extends Component {
     }
   }
 
+  deleteSkill = (skill) => {
+    const oldSkills = this.state.skills;
+    const newSkills = oldSkills.filter(oldSkill => oldSkill !== skill);
+
+    this.setState({
+      skills: newSkills
+    });
+
+    localStorage.setItem('skills', JSON.stringify(newSkills));
+  }
+
+  deleteUserSkill = (skill, id) => {
+    const {
+      mates
+    } = this.state;
+
+    const downGraded = mates.map(mate => {
+      if (mate.id === id) {
+        console.log(mate)
+        mate.skills = mate.skills.filter(oldSkill => oldSkill !== skill);
+      }
+
+      return mate;
+    });
+
+    this.setState({
+      mates: downGraded
+    });
+
+    localStorage.setItem('mates', JSON.stringify(downGraded));
+  }
+
+  deleteMate = (id) => {
+    const {
+      mates,
+      mateDetails,
+      excludedMates
+    } = this.state;
+
+    const allMates = mates;
+    const existingMates = allMates.filter(mate => mate.id !== id);
+    const newDetails = mateDetails === id ? id + 1 : id;
+    const actualExcluded = excludedMates.filter(existingId => existingId !== id);
+
+    this.setState({
+      mates: existingMates,
+      mateDetails: newDetails,
+      excludedMates: actualExcluded
+    });
+    
+    localStorage.setItem('mates', JSON.stringify(existingMates));
+  }
+
   dropFilter = () => {
     this.setState({
       filter: null,
@@ -203,6 +255,7 @@ export default class App extends Component {
               skills={ skills }
               callbackSet={ this.setFilter }
               callbackAdd={ this.addFilter }
+              deleteSkill={ this.deleteSkill }
             />
           }
 
@@ -226,6 +279,8 @@ export default class App extends Component {
           <Details
             data={ this.getMateDetails() }
             callback={ this.addSkill }
+            deleteUserSkill={ this.deleteUserSkill }
+            deleteMate={ this.deleteMate }
           />
         }
 

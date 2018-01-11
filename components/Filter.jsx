@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { array, func } from 'prop-types';
 import styled from 'styled-components';
 
@@ -34,9 +34,14 @@ const Label = styled.label`
   cursor: pointer;
 `;
 
-const rederFilter = (skills, callbackSet) => (
+const Delete = styled.div`
+  margin-left: auto;
+  cursor: pointer;
+`;
+
+const rederFilter = (skills, callbackSet, deleteSkill) => (
   skills.map((skill, id) => 
-    <Skill key={ id }>
+    <Skill key={ skill }>
       <Checkbox
         id={ `skill${ id }` }
         type='checkbox'
@@ -45,6 +50,8 @@ const rederFilter = (skills, callbackSet) => (
       />
 
       <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
+
+      <Delete onClick={ () => deleteSkill(skill) }>❌</Delete>
     </Skill>
   )
 );
@@ -58,10 +65,10 @@ const handleChange = (e, callbackSet) => {
   callbackSet(value, checked);
 }
 
-const Filter = ({ skills, callbackSet, callbackAdd }) => (
+const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
   <Container>
     <SkillsList>
-      { rederFilter(skills, callbackSet) }
+      { rederFilter(skills, callbackSet, deleteSkill) }
     </SkillsList>
 
     <AddItem
@@ -74,7 +81,8 @@ const Filter = ({ skills, callbackSet, callbackAdd }) => (
 Filter.propTypes = {
   skills: array,
   callbackSet: func,
-  callbackAdd: func
+  callbackAdd: func,
+  deleteSkill: func
 };
 
 export default Filter;
