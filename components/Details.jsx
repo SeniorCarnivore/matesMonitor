@@ -26,54 +26,49 @@ const SkillSet = styled.ul`
   padding-left: 80px;
 `;
 
+const renderSkillset = (skills) => (
+  <SkillSet>
+    {
+      skills.map(skill => <li key={ skill }>{ skill }</li>)
+    }
+  </SkillSet>
+)
 
-export default class Details extends Component {
-  static propTypes = {
-    data: object,
-    callback: func
-  }
 
-  renderSkillset = (skills) => (
-    <SkillSet>
-      {
-        skills.map(skill => <li key={ skill }>{ skill }</li>)
-      }
-    </SkillSet>
-  )
+const Details = ({ data, callback }) => {
 
-  render() {
+  const {
+    name,
+    surname,
+    skills,
+    rating
+  } = data;
 
-    const {
-      data,
-      callback
-    } = this.props;
+  return (
+    <Container>
 
-    const {
-      name,
-      surname,
-      skills,
-      rating
-    } = data;
-
-    return (
-      <Container>
-
-        <DetailsBlock>
-          <Avatar
-            name={ name }
-            surname={ surname }
-            url=''
-          />
-          { `${ name } ${ surname } (${ rating })` }
-        </DetailsBlock>
-        
-        { this.renderSkillset(skills) }
-
-        <AddItem
-          callback={ callback }
+      <DetailsBlock>
+        <Avatar
+          name={ name }
+          surname={ surname }
+          url=''
         />
+        { `${ name } ${ surname } (${ rating })` }
+      </DetailsBlock>
+      
+      { renderSkillset(skills) }
 
-      </Container>
-    );
-  }
+      <AddItem
+        callback={ callback }
+      />
+
+    </Container>
+  );
+}
+
+Details.propTypes = {
+  data: object,
+  callback: func
 };
+
+export default Details;

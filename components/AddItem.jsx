@@ -43,7 +43,7 @@ export default class AddItem extends PureComponent {
   }
 
   render() {
-    const value = this.state ? his.state.value : '';
+    const value = this.state ? this.state.value : '';
 
     return (
       <Container>

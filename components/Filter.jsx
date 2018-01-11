@@ -34,57 +34,47 @@ const Label = styled.label`
   cursor: pointer;
 `;
 
-export default class Filter extends Component {
-  static propTypes = {
-    skills: array,
-    callbackAdd: func
-  }
+const rederFilter = (skills, callbackSet) => (
+  skills.map((skill, id) => 
+    <Skill key={ id }>
+      <Checkbox
+        id={ `skill${ id }` }
+        type='checkbox'
+        value={ skill }
+        onChange={ (e) => handleChange(e, callbackSet) }
+      />
 
-  rederFilter = (skills) => (
-    skills.map((skill, id) => 
-      <Skill key={ id }>
-        <Checkbox
-          id={ `skill${ id }` }
-          type='checkbox'
-          value={ skill }
-          onChange={ (e) => this.handleChange(e) }
-        />
-
-        <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
-      </Skill>
-    )
+      <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
+    </Skill>
   )
+);
 
-  handleChange = (e) => {
-    const {
-      callbackSet
-    } = this.props;
+const handleChange = (e, callbackSet) => {
+  const {
+    value,
+    checked
+  } = e.target;
 
-    const {
-      value,
-      checked
-    } = e.target;
+  callbackSet(value, checked);
+}
 
-    callbackSet(value, checked);
-  }
+const Filter = ({ skills, callbackSet, callbackAdd }) => (
+  <Container>
+    <SkillsList>
+      { rederFilter(skills, callbackSet) }
+    </SkillsList>
 
-  render() {
-    const {
-      skills,
-      callbackAdd
-    } = this.props;
+    <AddItem
+      callback={ callbackAdd }
+    />
 
-    return (
-      <Container>
-        <SkillsList>
-          { this.rederFilter(skills) }
-        </SkillsList>
+  </Container>
+);
 
-        <AddItem
-          callback={ callbackAdd }
-        />
-
-      </Container>
-    );
-  }
+Filter.propTypes = {
+  skills: array,
+  callbackSet: func,
+  callbackAdd: func
 };
+
+export default Filter;

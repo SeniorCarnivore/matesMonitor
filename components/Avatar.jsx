@@ -15,34 +15,22 @@ const Container = styled.div`
   color: ${ props => props.url ? 'transparent' : '#000' };
 `;
 
+const Avatar = ({name, surname, url}) => 
+  <Container>
+    <span>
+      {
+        name &&
+        surname &&
+        name[0] + surname[0]
+      }
+    </span>
+  </Container>
+;
 
-export default class Avatar extends Component {
-  static propTypes = {
-    name: string,
-    surname: string,
-    url: string
-  }
-
-  createInitials = (name,surname) => {
-    return name[0] + surname[0]
-  }
-
-  render() {
-    const {
-      name,
-      surname
-    } = this.props;
-
-    return (
-      <Container>
-        <span>
-          {
-            name &&
-            surname &&
-            this.createInitials(name, surname)
-          }
-        </span>
-      </Container>
-    );
-  }
+Avatar.propTypes = {
+  name: string,
+  surname: string,
+  url: string
 };
+
+export default Avatar;
