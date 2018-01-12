@@ -1,45 +1,48 @@
 import 'babel-polyfill';
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 import { number, array } from 'prop-types';
 
 import Filter from './Filter';
 import MatesList from './MatesList';
 import Details from './Details';
+import { DropFilter, DropApp } from './TestControls';
 
 import RESPONSED_MATES from '../mates.json';
 import RESPONSED_SKILLS from '../skills.json';
 
+injectGlobal`
+  body {
+    margin: 0;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    color: #e2e2e2;
+  }
+`;
+
 const Container = styled.div`
   display: flex;
   width: 100%;
-  height: calC(100vh - 16px);
+  height: calC(100vh);
 `;
 
 const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 30%;
-  padding: 20px;
+  padding-top: 20px;
   box-sizing: border-box;
-  background-color: #999;
-`;
-
-const DropFilter = styled.button`
-  width: 100%;
-  height: 40px;
-  cursor: pointer;
-  font-size: 20px;
-`;
-
-const DropApp = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 4px 9px 1px 6px;
-  font-size: 20px;
-  text-align: center;
-  border: 0;
-  background-color: #ff9d9d;
-  cursor: cell;
+  background-color: #202020;
+  box-shadow: 0 0px 10px 0 #000 inset;
 `;
 
 export default class App extends Component {
@@ -71,8 +74,10 @@ export default class App extends Component {
       });
     }
 
+    const idOfFirst = mates[0] ? mates[0].id : 0;
+
     this.setState({
-      mateDetails: this.state.mates[0].id
+      mateDetails: idOfFirst
     });
   }
 
@@ -137,7 +142,14 @@ export default class App extends Component {
       mateDetails
     } = this.state;
 
-    const details = mates.find(mate => mate.id === mateDetails);
+    let details = `
+                  The castle is ransacked,
+                  your court disperses and you're
+                  left with pigeons to rule over.
+                `;
+    if (mateDetails !== 0 && mates.length !== 0) {
+      details = mates.find(mate => mate.id === mateDetails);
+    }
 
     return details;
   }
@@ -232,14 +244,9 @@ export default class App extends Component {
 
   dropFilter = () => {
     this.setState({
-      filter: null,
-      excludedMates: []
+        filter: null,
+        excludedMates: []
     })
-  }
-
-  dropApp = () => {
-    localStorage.clear();
-    document.location.reload();
   }
 
   render() {
@@ -250,6 +257,8 @@ export default class App extends Component {
       mateDetails,
       excludedMates
     } = this.state;
+
+    const mateDetailsLayout = this.getMateDetails();
 
     return (
       <Container> 
@@ -271,31 +280,28 @@ export default class App extends Component {
             <MatesList
               mates={ mates }
               filter={ filter }
+              mateDetails={ mateDetails }
               excludedMates={ excludedMates }
               determineMate={ this.determineMate }
               callback={ this.setMateDetails }
             />
           }
           
-          <DropFilter onClick={ this.dropFilter }>
-            💥 Drop Filter 💥
-          </DropFilter>
+          <DropFilter callback={ this.dropFilter }/>
 
         </Sidebar>
 
         {
           mates &&
           <Details
-            data={ this.getMateDetails() }
+            data={ mateDetailsLayout }
             callback={ this.addSkill }
             deleteUserSkill={ this.deleteUserSkill }
             deleteMate={ this.deleteMate }
           />
         }
 
-        <DropApp onClick={ this.dropApp }>
-          💀
-        </DropApp>
+        <DropApp/>
       </Container>
     );
   }

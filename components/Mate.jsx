@@ -7,10 +7,14 @@ import Avatar from './Avatar';
 const Container = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  padding: 5px;
+  padding: 10px 20px;
   box-sizing: border-box;
-  background-color: #666;
+  transition: all .5s;
+  background-color: ${props => props.isActive ? '#2b2b2b' : 'transparent'};
+
+  &:hover {
+    background-color: #666;
+  }
 `;
 
 const Identity = styled.div`
@@ -45,7 +49,7 @@ const handleDetermination = (id, determination, determineMate) => {
   determineMate(id, determination);
 }
 
-const Mate = ({ data, filtered, callback, determineMate }) => {
+const Mate = ({ data, filtered, mateDetails, callback, determineMate }) => {
   const {
     id,
     name,
@@ -54,7 +58,7 @@ const Mate = ({ data, filtered, callback, determineMate }) => {
   } = data;
 
   return (
-    <Container>
+    <Container isActive={ mateDetails === id }>
       <Identity onClick={ () => handleClick(id, callback) } >
         <Avatar
           name={ name }

@@ -4,15 +4,27 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  margin: 0 0 10px 0;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
 const Input = styled.input`
-  height: 20px;
+  height: 25px;
+  font-size: 16px;
+  width: 100%;
+  padding: 0 10px;
+  border: 0;
+  box-sizing: border-box;
+  outline: none;
 `;
 
 const Submit = styled.button`
+  border: 0;
   cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #666;
 `;
 
 export default class AddItem extends PureComponent {
@@ -51,7 +63,7 @@ export default class AddItem extends PureComponent {
           value={ value }
           onChange = { (e) => this.handleChange(e.target.value) }
         />
-        <Submit onClick={ this.handleSubmit } >Add</Submit>
+        <Submit onClick={ this.handleSubmit } >✨ Add ✨</Submit>
       </Container>
     );
   }
