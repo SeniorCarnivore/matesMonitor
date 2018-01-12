@@ -51,7 +51,12 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    if (!this.state.mates || !this.state.mates.length) {
+    const {
+      mates,
+      skills
+    } = this.state;
+
+    if (!mates || !mates.length) {
       localStorage.setItem('mates', JSON.stringify(RESPONSED_MATES));
 
       this.setState({
@@ -59,7 +64,7 @@ export default class App extends Component {
       });
     }
 
-    if (!this.state.skills || !this.state.skills.length) {
+    if (!skills || !skills.length) {
       localStorage.setItem('skills', JSON.stringify(RESPONSED_SKILLS));
 
       this.setState({
@@ -188,7 +193,6 @@ export default class App extends Component {
 
     const downGraded = mates.map(mate => {
       if (mate.id === id) {
-        console.log(mate)
         mate.skills = mate.skills.filter(oldSkill => oldSkill !== skill);
       }
 
@@ -270,7 +274,9 @@ export default class App extends Component {
             />
           }
           
-          <DropFilter onClick={ this.dropFilter }>💥 Drop Filter 💥</DropFilter>
+          <DropFilter onClick={ this.dropFilter }>
+            💥 Drop Filter 💥
+          </DropFilter>
 
         </Sidebar>
 
@@ -284,7 +290,9 @@ export default class App extends Component {
           />
         }
 
-        <DropApp onClick={ this.dropApp }>💀</DropApp>
+        <DropApp onClick={ this.dropApp }>
+          💀
+        </DropApp>
       </Container>
     );
   }

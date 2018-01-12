@@ -34,8 +34,10 @@ const Label = styled.label`
   cursor: pointer;
 `;
 
-const Delete = styled.div`
+const Delete = styled.button`
   margin-left: auto;
+  border: 0;
+  background-color: transparent;
   cursor: pointer;
 `;
 

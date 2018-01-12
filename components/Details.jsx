@@ -25,37 +25,43 @@ const SkillSet = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: baseline;
+  width: 133px;
   margin: 0 0 10px 0;
   padding-left: 80px;
-
-  li {
-    display: flex;
-
-    span {
-      margin-left: auto;
-    }
-  }
 `;
 
-const Delete = styled.div`
-  margin-left: auto;
-  cursor: pointer;
+const Skill = styled.li`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const DeleteSkill = styled.button`
+  border: 0;
   font-size: 10px;
+  cursor: pointer;
+  background-color: transparent;
 `;
 
-const Remove = styled.div`
-  cursor: pointer;
+const DeleteMate = styled.button`
+  display: flex;
+  align-self: baseline;
+  border: 0;
   font-size: 30px;
+  background-color: transparent;
+  cursor: pointer;
 `;
 
 const renderSkillset = (skills, deleteUserSkill, id) => (
   <SkillSet>
     {
       skills.map(skill => (
-        <li key={ skill }>
+        <Skill key={ skill }>
           <span>{ skill }</span>
-          <Delete onClick={ () => deleteUserSkill(skill, id) }>❌</Delete>
-        </li>
+          <DeleteSkill onClick={ () => deleteUserSkill(skill, id) }>
+            ❌
+          </DeleteSkill>
+        </Skill>
       ))
     }
   </SkillSet>
@@ -92,7 +98,9 @@ const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
         callback={ callback }
       />
 
-      <Remove onClick={ () => deleteMate(id) }>⚰️</Remove>
+      <DeleteMate onClick={ () => deleteMate(id) }>
+        ⚰️
+      </DeleteMate>
 
     </Container>
   );
