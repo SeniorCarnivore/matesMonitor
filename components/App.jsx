@@ -44,7 +44,6 @@ const DropApp = styled.button`
 
 export default class App extends Component {
   state = {
-    mateDetails: 1,
     excludedMates: [],
     mates: JSON.parse(localStorage.getItem('mates')) || null,
     skills: JSON.parse(localStorage.getItem('skills')) || []
@@ -71,6 +70,10 @@ export default class App extends Component {
         skills: RESPONSED_SKILLS
       });
     }
+
+    this.setState({
+      mateDetails: this.state.mates[0].id
+    });
   }
 
   setFilter = (skill, checked) => {
