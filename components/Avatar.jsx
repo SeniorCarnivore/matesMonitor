@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { string } from 'prop-types';
 import styled from 'styled-components';
+
+const Avatars  = ['🧞‍', '🧛‍', '👹', '🤴🏻', '👳🏻', '🧝‍', '💀', '🧙‍', '🐲'];
 
 const Container = styled.div`
   display: flex;
@@ -10,39 +12,25 @@ const Container = styled.div`
   height: 50px;
   margin-right: 10px;
   border-radius: 51%;
+  font-size: 25px;
+  line-height: 50px;
   background-color: #e6e6e6;
   background-image: ${ props => props.url };
   color: ${ props => props.url ? 'transparent' : '#000' };
 `;
 
+const Avatar = ({name, surname, url}) => 
+  <Container url={ url }>
+    <span>
+      { Avatars[Math.round(Math.random() * Avatars.length)] }
+    </span>
+  </Container>
+;
 
-export default class Avatar extends Component {
-  static propTypes = {
-    name: string,
-    surname: string,
-    url: string
-  }
-
-  createInitials = (name,surname) => {
-    return name[0] + surname[0]
-  }
-
-  render() {
-    const {
-      name,
-      surname
-    } = this.props;
-
-    return (
-      <Container>
-        <span>
-          {
-            name &&
-            surname &&
-            this.createInitials(name, surname)
-          }
-        </span>
-      </Container>
-    );
-  }
+Avatar.propTypes = {
+  name: string,
+  surname: string,
+  url: string
 };
+
+export default Avatar;

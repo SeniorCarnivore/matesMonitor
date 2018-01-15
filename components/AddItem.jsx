@@ -2,17 +2,12 @@ import React, { PureComponent } from 'react';
 import { func } from 'prop-types';
 import styled from 'styled-components';
 
+import { Input, Submit } from './UI';
+
 const Container = styled.div`
   display: flex;
-  margin: 0 0 10px 0;
-`;
-
-const Input = styled.input`
-  height: 20px;
-`;
-
-const Submit = styled.button`
-  cursor: pointer;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
 export default class AddItem extends PureComponent {
@@ -43,15 +38,15 @@ export default class AddItem extends PureComponent {
   }
 
   render() {
-    const value = this.state ? his.state.value : '';
+    const value = this.state ? this.state.value : '';
 
     return (
       <Container>
         <Input
           value={ value }
-          onChange = { (e) => this.handleChange(e.target.value) }
+          onChange = { e => this.handleChange(e.target.value) }
         />
-        <Submit onClick={ this.handleSubmit } >Add</Submit>
+        <Submit onClick={ this.handleSubmit } >✨ Add ✨</Submit>
       </Container>
     );
   }

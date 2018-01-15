@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { object, func, number } from 'prop-types';
 import styled from 'styled-components';
 
 import Avatar from './Avatar';
@@ -7,10 +7,14 @@ import Avatar from './Avatar';
 const Container = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  padding: 5px;
+  padding: 10px 20px;
   box-sizing: border-box;
-  background-color: #666;
+  transition: all .5s;
+  background-color: ${props => props.isActive ? '#2b2b2b' : 'transparent'};
+
+  &:hover {
+    background-color: #666;
+  }
 `;
 
 const Identity = styled.div`
@@ -37,63 +41,64 @@ const Control = styled.button`
   outline: none;
 `;
 
-export default class Mate extends Component {
-  static propTypes = {
-    data: object
-  }
+const handleClick = (id, callback) => {
+  callback(id);
+}
 
-  handleClick = (id) => {
-    const {
-      callback
-    } = this.props;
+const handleDetermination = (id, determination, determineMate) => {
+  determineMate(id, determination);
+}
 
-    callback(id);
-  }
+const Mate = ({ data, filtered, mateDetails, callback, determineMate }) => {
+  const {
+    id,
+    name,
+    surname,
+    rating
+  } = data;
 
-  handleDetermination(id, determination) {
-    const {
-      determineMate
-    } = this.props;
+  return (
+    <Container isActive={ mateDetails === id }>
+      <Identity onClick={ () => handleClick(id, callback) } >
+        <Avatar
+          name={ name }
+          surname={ surname }
+          url=''
+        />
 
-    determineMate(id, determination);
-  }
+        <span>
+          { `${ name } ${ surname }` }
+        </span>
+      </Identity>
 
-  render() {
-    const {
-      data,
-      filtered
-    } = this.props;
+      { 
+        filtered > 0 &&
+        <RatingPanel>
+          <Control
+            onClick={ () => handleDetermination(id, true, determineMate) }
+            left
+          >
+            👍🏻
+          </Control>
 
-    const {
-      id,
-      name,
-      surname,
-      rating
-    } = data;
+          ({ rating })
 
-    return (
-      <Container>
-        <Identity onClick={ () => this.handleClick(id) } >
-          <Avatar
-            name={ name }
-            surname={ surname }
-            url=''
-          />
-
-          <span>
-            { `${ name } ${ surname }` }
-          </span>
-        </Identity>
-
-        { 
-          filtered > 0 &&
-          <RatingPanel>
-            <Control onClick={ () => this.handleDetermination(id, true) } left>👍🏻</Control>
-            ({ rating })
-            <Control onClick={ () => this.handleDetermination(id) } >👎🏻</Control>
-          </RatingPanel>
-        }
-      </Container>
-    );
-  }
+          <Control
+            onClick={ () => handleDetermination(id, false,  determineMate) }
+          >
+            👎🏻
+          </Control>
+        </RatingPanel>
+      }
+    </Container>
+  );
 };
+
+Mate.propTypes = {
+  data: object,
+  callback: func,
+  determineMate: func,
+  filtered: number
+};
+
+export default Mate;

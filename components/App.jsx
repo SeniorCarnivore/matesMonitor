@@ -1,72 +1,84 @@
 import 'babel-polyfill';
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 import { number, array } from 'prop-types';
 
 import Filter from './Filter';
 import MatesList from './MatesList';
 import Details from './Details';
+import { DropFilter, DropApp } from './TestControls';
 
 import RESPONSED_MATES from '../mates.json';
 import RESPONSED_SKILLS from '../skills.json';
 
+injectGlobal`
+  body {
+    margin: 0;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    color: #e2e2e2;
+  }
+`;
+
 const Container = styled.div`
   display: flex;
   width: 100%;
-  height: calC(100vh - 16px);
+  height: calC(100vh);
 `;
 
 const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 30%;
-  padding: 20px;
+  padding-top: 20px;
   box-sizing: border-box;
-  background-color: #999;
-`;
-
-const DropFilter = styled.button`
-  width: 100%;
-  height: 40px;
-  cursor: pointer;
-  font-size: 20px;
-`;
-
-const DropApp = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 4px 9px 1px 6px;
-  font-size: 20px;
-  text-align: center;
-  border: 0;
-  background-color: #ff9d9d;
-  cursor: cell;
+  background-color: #202020;
+  box-shadow: 0 0px 10px 0 #000 inset;
 `;
 
 export default class App extends Component {
-
   state = {
-    mateDetails: 1,
     excludedMates: [],
     mates: JSON.parse(localStorage.getItem('mates')) || null,
     skills: JSON.parse(localStorage.getItem('skills')) || []
   }
 
   componentWillMount() {
-    if (!this.state.mates || !this.state.mates.length) {
-      localStorage.setItem('mates', JSON.stringify(RESPONSED_MATES));
+    const {
+      mates,
+      skills
+    } = this.state;
 
-      this.setState({
-        mates: RESPONSED_MATES
-      });
+    if (!mates || !mates.length) {
+      this.updateAppData('mates', RESPONSED_MATES);
     }
 
-    if (!this.state.skills || !this.state.skills.length) {
-      localStorage.setItem('skills', JSON.stringify(RESPONSED_SKILLS));
-
-      this.setState({
-        skills: RESPONSED_SKILLS
-      });
+    if (!skills || !skills.length) {
+      this.updateAppData('skills', RESPONSED_SKILLS);
     }
+
+    const idOfFirst = mates[0] ? mates[0].id : 0;
+
+    this.setState({
+      mateDetails: idOfFirst
+    });
+  }
+
+  updateAppData = (key, data) => {
+    this.setState({
+      [key]: data
+    });
+
+    localStorage.setItem(key, JSON.stringify(data));
   }
 
   setFilter = (skill, checked) => {
@@ -86,11 +98,7 @@ export default class App extends Component {
     if (skills.indexOf(newSkill) < 0) {
       skills.push(newSkill);
 
-      this.setState({
-        skills: skills
-      });
-
-      localStorage.setItem('skills', JSON.stringify(skills));
+      this.updateAppData('skills', skills);
     }
   }
 
@@ -113,7 +121,7 @@ export default class App extends Component {
       mates: updatedMates
     });
 
-    localStorage.setItem('mates', JSON.stringify(updatedMates));
+    this.updateAppData('mates', updatedMates);
 
     this.addFilter(skill);
   }
@@ -124,13 +132,28 @@ export default class App extends Component {
     });
   }
 
+  createMateId = (keys) => {
+    const id = Math.floor(Math.random() * ( 1000 - 0 + 1 )) + 1;
+    const idIsUnique = keys.indexOf(id) < 0;
+    const uniqueId = idIsUnique ? id : this.createMateId(keys);
+
+    return uniqueId;
+  }
+
   getMateDetails = () => {
     const {
       mates,
       mateDetails
     } = this.state;
 
-    const details = mates.find(mate => mate.id === mateDetails);
+    let details = `
+                  The castle is ransacked,
+                  your court disperses and you're
+                  left with pigeons to rule over.
+                `;
+    if (mateDetails !== 0 && mates.length !== 0) {
+      details = mates.find(mate => mate.id === mateDetails);
+    }
 
     return details;
   }
@@ -152,16 +175,11 @@ export default class App extends Component {
         return mate;
       });
   
-      this.setState({
-        mates: updatedMates
-      });
-  
-      localStorage.setItem('mates', JSON.stringify(updatedMates));
-
+      this.updateAppData('mates', updatedMates);
       this.dropFilter();
 
     } else {
-  
+
       const newExclusion = excludedMates;
       newExclusion.push(id);
 
@@ -171,16 +189,73 @@ export default class App extends Component {
     }
   }
 
-  dropFilter = () => {
-    this.setState({
-      filter: null,
-      excludedMates: []
-    })
+  deleteSkill = (skill) => {
+    const oldSkills = this.state.skills;
+    const newSkills = oldSkills.filter(oldSkill => oldSkill !== skill);
+
+    this.updateAppData('skills', newSkills);
   }
 
-  dropApp = () => {
-    localStorage.clear();
-    document.location.reload();
+  deleteUserSkill = (skill, id) => {
+    const {
+      mates
+    } = this.state;
+
+    const downGraded = mates.map(mate => {
+      if (mate.id === id) {
+        mate.skills = mate.skills.filter(oldSkill => oldSkill !== skill);
+      }
+
+      return mate;
+    });
+
+    this.updateAppData('mates', downGraded);
+  }
+
+  addMate = (mate) => {
+    const {
+      mates
+    } = this.state;
+
+    let oldTeam = mates;
+    const identifiers = mates.map(mate => mate.id);
+    const mateId = this.createMateId(identifiers);
+
+    mate.skills = [];
+    mate.rating = 0;
+    mate.id = mateId;
+
+    oldTeam.push(mate);
+
+    this.updateAppData('mates', oldTeam);
+  }
+
+  deleteMate = (id) => {
+    const {
+      mates,
+      mateDetails,
+      excludedMates
+    } = this.state;
+
+    const allMates = mates;
+    const existingMates = allMates.filter(mate => mate.id !== id);
+    const newDetails = mateDetails === id ? id + 1 : id;
+    const actualExcluded = excludedMates.filter(existingId => existingId !== id);
+
+    this.setState({
+      mates: existingMates,
+      mateDetails: newDetails,
+      excludedMates: actualExcluded
+    });
+    
+    localStorage.setItem('mates', JSON.stringify(existingMates));
+  }
+
+  dropFilter = () => {
+    this.setState({
+        filter: null,
+        excludedMates: []
+    })
   }
 
   render() {
@@ -191,6 +266,8 @@ export default class App extends Component {
       mateDetails,
       excludedMates
     } = this.state;
+
+    const mateDetailsLayout = this.getMateDetails();
 
     return (
       <Container> 
@@ -203,6 +280,7 @@ export default class App extends Component {
               skills={ skills }
               callbackSet={ this.setFilter }
               callbackAdd={ this.addFilter }
+              deleteSkill={ this.deleteSkill }
             />
           }
 
@@ -211,25 +289,29 @@ export default class App extends Component {
             <MatesList
               mates={ mates }
               filter={ filter }
+              mateDetails={ mateDetails }
               excludedMates={ excludedMates }
               determineMate={ this.determineMate }
               callback={ this.setMateDetails }
             />
           }
           
-          <DropFilter onClick={ this.dropFilter }>💥 Drop Filter 💥</DropFilter>
+          <DropFilter callback={ this.dropFilter }/>
 
         </Sidebar>
 
         {
           mates &&
           <Details
-            data={ this.getMateDetails() }
+            data={ mateDetailsLayout }
             callback={ this.addSkill }
+            deleteUserSkill={ this.deleteUserSkill }
+            deleteMate={ this.deleteMate }
+            addMate={ this.addMate }
           />
         }
 
-        <DropApp onClick={ this.dropApp }>💀</DropApp>
+        <DropApp/>
       </Container>
     );
   }
