@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import { 
-  array,
-  arrayOf,
-  object,
-  func,
-  number
-} from 'prop-types';
+import { func } from 'prop-types';
 import styled from 'styled-components';
 
-import { Input, Submit } from './UI';
+import {
+  Input,
+  Submit
+} from './UI';
 
 const Container = styled.div`
   display: flex;
   position: relative;
-  margin: auto 60px 20px;
   padding: 10px 20px;
-  background-color: #202020;
 
   &:before {
     content: '';
@@ -70,10 +65,7 @@ export default class AddMate extends Component {
       surname
     } = this.state;
 
-    const {
-      callback
-    } = this.props;
-
+    const { callback } = this.props;
     const userData = name && surname ? this.state : null;
 
     if (userData) {

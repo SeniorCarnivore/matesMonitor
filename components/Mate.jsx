@@ -7,9 +7,11 @@ import Avatar from './Avatar';
 const Container = styled.div`
   display: flex;
   align-items: center;
+  min-height: 60px;
   padding: 10px 20px;
   box-sizing: border-box;
   transition: all .5s;
+  direction: ltr;
   background-color: ${props => props.isActive ? '#2b2b2b' : 'transparent'};
 
   &:hover {

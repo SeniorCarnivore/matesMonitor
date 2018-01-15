@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import Avatar from './Avatar';
 import AddItem from './AddItem';
-import AddMate from './AddMate';
 
 const Container = styled.div`
   display: flex;
@@ -102,10 +101,11 @@ const DeleteMate = styled.button`
   font-size: 30px;
   background-color: transparent;
   cursor: pointer;
+  outline: none;
 
   &:hover {
     &:before {
-      transform: rotate(-45deg) translate(-7px, 9px);
+      transform: rotate(-45deg) translate(-7px, 9px) scale(0.7);
     }
     
     &:after {
@@ -126,8 +126,7 @@ const DeleteMate = styled.button`
   &:before {
     content: '⚰️';
     top: 0;
-    transform-origin: center;
-    transform: rotate(0deg) translateY(0);
+    transform: rotate(0deg) translate(0, 0) scale(1);
   }
 
   &:after {
@@ -156,7 +155,7 @@ const renderSkillset = (skills, deleteUserSkill, id) => (
 );
 
 
-const Details = ({ data, callback, deleteUserSkill, deleteMate, addMate }) => {
+const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
   const {
     id,
     name,
@@ -194,8 +193,6 @@ const Details = ({ data, callback, deleteUserSkill, deleteMate, addMate }) => {
       </AddItemWrapper>
 
       <DeleteMate onClick={ () => deleteMate(id) }/>
-
-      <AddMate callback={ addMate }/>
     </Container>
   );
 }

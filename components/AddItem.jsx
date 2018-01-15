@@ -6,6 +6,7 @@ import { Input, Submit } from './UI';
 
 const Container = styled.div`
   display: flex;
+  min-height: 29px;
   padding: 0 20px;
   box-sizing: border-box;
 `;
@@ -22,13 +23,9 @@ export default class AddItem extends PureComponent {
   }
 
   handleSubmit = () => {
-    const {
-      value
-    } = this.state;
+    const { value } = this.state;
 
-    const {
-      callback
-    } = this.props;
+    const { callback } = this.props;
 
     callback(value);
 

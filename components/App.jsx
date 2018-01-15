@@ -6,7 +6,17 @@ import { number, array } from 'prop-types';
 import Filter from './Filter';
 import MatesList from './MatesList';
 import Details from './Details';
-import { DropFilter, DropApp } from './TestControls';
+import AddMate from './AddMate';
+
+import {
+  createMateId,
+  getMateDetails
+} from './Helpers';
+
+import {
+  DropFilter,
+  DropApp
+} from './TestControls';
 
 import RESPONSED_MATES from '../mates.json';
 import RESPONSED_SKILLS from '../skills.json';
@@ -38,7 +48,7 @@ const Container = styled.div`
 const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 35%;
   padding-top: 20px;
   box-sizing: border-box;
   background-color: #202020;
@@ -58,6 +68,8 @@ export default class App extends Component {
       skills
     } = this.state;
 
+    const idOfFirst = mates && mates[0] ? mates[0].id : 0;
+
     if (!mates || !mates.length) {
       this.updateAppData('mates', RESPONSED_MATES);
     }
@@ -65,8 +77,6 @@ export default class App extends Component {
     if (!skills || !skills.length) {
       this.updateAppData('skills', RESPONSED_SKILLS);
     }
-
-    const idOfFirst = mates[0] ? mates[0].id : 0;
 
     this.setState({
       mateDetails: idOfFirst
@@ -91,9 +101,7 @@ export default class App extends Component {
   }
 
   addFilter = (newSkill) => {
-    const {
-      skills
-    } = this.state;
+    const { skills } = this.state;
 
     if (skills.indexOf(newSkill) < 0) {
       skills.push(newSkill);
@@ -117,12 +125,7 @@ export default class App extends Component {
       return mate;
     });
 
-    this.setState({
-      mates: updatedMates
-    });
-
     this.updateAppData('mates', updatedMates);
-
     this.addFilter(skill);
   }
 
@@ -130,32 +133,6 @@ export default class App extends Component {
     this.setState({
       mateDetails: id
     });
-  }
-
-  createMateId = (keys) => {
-    const id = Math.floor(Math.random() * ( 1000 - 0 + 1 )) + 1;
-    const idIsUnique = keys.indexOf(id) < 0;
-    const uniqueId = idIsUnique ? id : this.createMateId(keys);
-
-    return uniqueId;
-  }
-
-  getMateDetails = () => {
-    const {
-      mates,
-      mateDetails
-    } = this.state;
-
-    let details = `
-                  The castle is ransacked,
-                  your court disperses and you're
-                  left with pigeons to rule over.
-                `;
-    if (mateDetails !== 0 && mates.length !== 0) {
-      details = mates.find(mate => mate.id === mateDetails);
-    }
-
-    return details;
   }
 
   determineMate = (id, accept) => {
@@ -197,9 +174,7 @@ export default class App extends Component {
   }
 
   deleteUserSkill = (skill, id) => {
-    const {
-      mates
-    } = this.state;
+    const { mates } = this.state;
 
     const downGraded = mates.map(mate => {
       if (mate.id === id) {
@@ -213,13 +188,11 @@ export default class App extends Component {
   }
 
   addMate = (mate) => {
-    const {
-      mates
-    } = this.state;
+    const { mates } = this.state;
 
     let oldTeam = mates;
     const identifiers = mates.map(mate => mate.id);
-    const mateId = this.createMateId(identifiers);
+    const mateId = createMateId(identifiers);
 
     mate.skills = [];
     mate.rating = 0;
@@ -243,12 +216,11 @@ export default class App extends Component {
     const actualExcluded = excludedMates.filter(existingId => existingId !== id);
 
     this.setState({
-      mates: existingMates,
       mateDetails: newDetails,
       excludedMates: actualExcluded
     });
-    
-    localStorage.setItem('mates', JSON.stringify(existingMates));
+
+    this.updateAppData('mates', existingMates);
   }
 
   dropFilter = () => {
@@ -267,7 +239,7 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
-    const mateDetailsLayout = this.getMateDetails();
+    const mateDetailsLayout = getMateDetails(mates, mateDetails);
 
     return (
       <Container> 
@@ -295,6 +267,8 @@ export default class App extends Component {
               callback={ this.setMateDetails }
             />
           }
+
+          <AddMate callback={ this.addMate }/>
           
           <DropFilter callback={ this.dropFilter }/>
 
@@ -307,7 +281,6 @@ export default class App extends Component {
             callback={ this.addSkill }
             deleteUserSkill={ this.deleteUserSkill }
             deleteMate={ this.deleteMate }
-            addMate={ this.addMate }
           />
         }
 

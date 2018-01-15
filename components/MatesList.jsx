@@ -13,6 +13,22 @@ import Mate from './Mate';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  width: calc(100% - 20px);
+  min-height: 500px;
+  max-height: 500px;
+  height: 500px;
+  margin: 0 0 20px 20px;
+  overflow-y: scroll;
+  direction: rtl;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: #666;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #cacaca;
+  }
 `;
 
 
@@ -89,16 +105,16 @@ export default class MatesList extends Component {
 
     return (
       <Container>
-          { 
-            this.filterMates(
-                              mates,
-                              filter,
-                              excludedMates,
-                              callback,
-                              determineMate,
-                              mateDetails
-                            )
-          }
+        { 
+          this.filterMates(
+                            mates,
+                            filter,
+                            excludedMates,
+                            callback,
+                            determineMate,
+                            mateDetails
+                          )
+        }
       </Container>
     );
   }
