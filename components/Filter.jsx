@@ -7,26 +7,45 @@ import AddItem from './AddItem';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  height: 30vh;
+  margin-bottom: 2.5vh;
 `;
 
 const SkillsList = styled.ul`
-  display: block;
-  width: 100%;
-  margin: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 20px);
+  margin: 20px 0 10px 20px;
   padding: 0 20px;
+  overflow-y: scroll;
+  direction: rtl;
   box-sizing: border-box;
   font-size: 18px;
   list-style: none;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: #666;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #cacaca;
+  }
 `;
 
 const Skill = styled.li`
   display: flex;
   position: relative;
   align-items: center;
+  min-height: 30px;
   line-height: 30px;
   user-select: none;
   margin-bottom: 10px;
+  direction: ltr;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &:hover {
     button {
@@ -117,6 +136,10 @@ const Delete = styled.button`
   }
 `;
 
+const StyledAddItem = styled(AddItem)`
+  height: 5vh;
+`;
+
 const rederFilter = (skills, callbackSet, deleteSkill) => (
   skills.map((skill, id) => 
     <Skill key={ skill }>
@@ -150,7 +173,7 @@ const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
       { rederFilter(skills, callbackSet, deleteSkill) }
     </SkillsList>
 
-    <AddItem
+    <StyledAddItem
       callback={ callbackAdd }
     />
 

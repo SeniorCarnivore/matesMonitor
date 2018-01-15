@@ -10,6 +10,7 @@ import {
 const Container = styled.div`
   display: flex;
   position: relative;
+  height: 5vh;
   padding: 10px 20px;
 
   &:before {

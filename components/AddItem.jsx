@@ -6,7 +6,7 @@ import { Input, Submit } from './UI';
 
 const Container = styled.div`
   display: flex;
-  min-height: 29px;
+  height: 5vh;
   padding: 0 20px;
   box-sizing: border-box;
 `;

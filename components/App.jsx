@@ -46,10 +46,7 @@ const Container = styled.div`
 `;
 
 const Sidebar = styled.div`
-  display: flex;
-  flex-direction: column;
   width: 35%;
-  padding-top: 20px;
   box-sizing: border-box;
   background-color: #202020;
   box-shadow: 0 0px 10px 0 #000 inset;
@@ -211,8 +208,9 @@ export default class App extends Component {
     } = this.state;
 
     const allMates = mates;
+    const firstMateId = allMates[0].id;
     const existingMates = allMates.filter(mate => mate.id !== id);
-    const newDetails = mateDetails === id ? id + 1 : id;
+    const newDetails = mateDetails === id ? firstMateId : id;
     const actualExcluded = excludedMates.filter(existingId => existingId !== id);
 
     this.setState({

@@ -12,6 +12,7 @@ export const Input = styled.input`
 `;
 
 export const Submit = styled.button`
+  height: 29px;
   border: 0;
   font-size: 16px;
   cursor: pointer;

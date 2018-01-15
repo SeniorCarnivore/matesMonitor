@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const DropFilterContainer = styled.button`
   width: 100%;
-  height: 40px;
+  height: 5vh;
   border: 0;
   margin-top: auto;
   font-size: 20px;
