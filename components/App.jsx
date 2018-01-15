@@ -59,19 +59,11 @@ export default class App extends Component {
     } = this.state;
 
     if (!mates || !mates.length) {
-      localStorage.setItem('mates', JSON.stringify(RESPONSED_MATES));
-
-      this.setState({
-        mates: RESPONSED_MATES
-      });
+      this.updateAppData('mates', RESPONSED_MATES);
     }
 
     if (!skills || !skills.length) {
-      localStorage.setItem('skills', JSON.stringify(RESPONSED_SKILLS));
-
-      this.setState({
-        skills: RESPONSED_SKILLS
-      });
+      this.updateAppData('skills', RESPONSED_SKILLS);
     }
 
     const idOfFirst = mates[0] ? mates[0].id : 0;
@@ -79,6 +71,14 @@ export default class App extends Component {
     this.setState({
       mateDetails: idOfFirst
     });
+  }
+
+  updateAppData = (key, data) => {
+    this.setState({
+      [key]: data
+    });
+
+    localStorage.setItem(key, JSON.stringify(data));
   }
 
   setFilter = (skill, checked) => {
@@ -98,11 +98,7 @@ export default class App extends Component {
     if (skills.indexOf(newSkill) < 0) {
       skills.push(newSkill);
 
-      this.setState({
-        skills: skills
-      });
-
-      localStorage.setItem('skills', JSON.stringify(skills));
+      this.updateAppData('skills', skills);
     }
   }
 
@@ -125,7 +121,7 @@ export default class App extends Component {
       mates: updatedMates
     });
 
-    localStorage.setItem('mates', JSON.stringify(updatedMates));
+    this.updateAppData('mates', updatedMates);
 
     this.addFilter(skill);
   }
@@ -134,6 +130,14 @@ export default class App extends Component {
     this.setState({
       mateDetails: id
     });
+  }
+
+  createMateId = (keys) => {
+    const id = Math.floor(Math.random() * ( 1000 - 0 + 1 )) + 1;
+    const idIsUnique = keys.indexOf(id) < 0;
+    const uniqueId = idIsUnique ? id : this.createMateId(keys);
+
+    return uniqueId;
   }
 
   getMateDetails = () => {
@@ -171,16 +175,11 @@ export default class App extends Component {
         return mate;
       });
   
-      this.setState({
-        mates: updatedMates
-      });
-  
-      localStorage.setItem('mates', JSON.stringify(updatedMates));
-
+      this.updateAppData('mates', updatedMates);
       this.dropFilter();
 
     } else {
-  
+
       const newExclusion = excludedMates;
       newExclusion.push(id);
 
@@ -194,11 +193,7 @@ export default class App extends Component {
     const oldSkills = this.state.skills;
     const newSkills = oldSkills.filter(oldSkill => oldSkill !== skill);
 
-    this.setState({
-      skills: newSkills
-    });
-
-    localStorage.setItem('skills', JSON.stringify(newSkills));
+    this.updateAppData('skills', newSkills);
   }
 
   deleteUserSkill = (skill, id) => {
@@ -214,11 +209,25 @@ export default class App extends Component {
       return mate;
     });
 
-    this.setState({
-      mates: downGraded
-    });
+    this.updateAppData('mates', downGraded);
+  }
 
-    localStorage.setItem('mates', JSON.stringify(downGraded));
+  addMate = (mate) => {
+    const {
+      mates
+    } = this.state;
+
+    let oldTeam = mates;
+    const identifiers = mates.map(mate => mate.id);
+    const mateId = this.createMateId(identifiers);
+
+    mate.skills = [];
+    mate.rating = 0;
+    mate.id = mateId;
+
+    oldTeam.push(mate);
+
+    this.updateAppData('mates', oldTeam);
   }
 
   deleteMate = (id) => {
@@ -298,6 +307,7 @@ export default class App extends Component {
             callback={ this.addSkill }
             deleteUserSkill={ this.deleteUserSkill }
             deleteMate={ this.deleteMate }
+            addMate={ this.addMate }
           />
         }
 

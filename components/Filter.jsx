@@ -124,7 +124,7 @@ const rederFilter = (skills, callbackSet, deleteSkill) => (
         id={ `skill${ id }` }
         type='checkbox'
         value={ skill }
-        onChange={ (e) => handleChange(e, callbackSet) }
+        onChange={ e => handleChange(e, callbackSet) }
       />
       <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
 

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Avatar from './Avatar';
 import AddItem from './AddItem';
+import AddMate from './AddMate';
 
 const Container = styled.div`
   display: flex;
@@ -155,7 +156,7 @@ const renderSkillset = (skills, deleteUserSkill, id) => (
 );
 
 
-const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
+const Details = ({ data, callback, deleteUserSkill, deleteMate, addMate }) => {
   const {
     id,
     name,
@@ -189,11 +190,12 @@ const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
       }
 
       <AddItemWrapper>
-        <AddItem callback={ callback } />
+        <AddItem callback={ callback }/>
       </AddItemWrapper>
 
       <DeleteMate onClick={ () => deleteMate(id) }/>
 
+      <AddMate callback={ addMate }/>
     </Container>
   );
 }
@@ -202,7 +204,8 @@ Details.propTypes = {
   data: oneOfType([object, string]),
   callback: func,
   deleteUserSkill: func,
-  deleteMate: func
+  deleteMate: func,
+  addMate: func
 };
 
 export default Details;
