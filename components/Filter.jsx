@@ -3,6 +3,9 @@ import { array, func } from 'prop-types';
 import styled from 'styled-components';
 
 import AddItem from './AddItem';
+import { Checkbox, Label, SkillsList } from './UI';
+
+import { handleCheckboxChange } from './Helpers';
 
 const Container = styled.div`
   display: flex;
@@ -11,17 +14,9 @@ const Container = styled.div`
   margin-bottom: 2.5vh;
 `;
 
-const SkillsList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 20px);
-  margin: 20px 0 10px 20px;
-  padding: 0 20px;
+const SkillsListScroll = styled(SkillsList)`
   overflow-y: scroll;
   direction: rtl;
-  box-sizing: border-box;
-  font-size: 18px;
-  list-style: none;
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -51,51 +46,6 @@ const Skill = styled.li`
     button {
       opacity: 1;
     }
-  }
-`;
-
-const Checkbox = styled.input`
-  width: 30px;
-  height: 30px;
-  margin: 0 10px 0 0;
-  cursor: pointer;
-  opacity: 0;
-
-  &:checked + label:after {
-    opacity: 1;
-    transform: translateX(6px);
-  }
-`;
-
-const Label = styled.label`
-  position: relative;
-  cursor: pointer;
-
-  &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    left: -40px;
-    top: 0;
-    background-color: #e2e2e2;
-    pointer-events: none;
-  }
-
-  &:after {
-    content: '💃';
-    display: block;
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    left: -40px;
-    top: 0;
-    z-index: 1;
-    opacity: 0;
-    pointer-events: none;
-    transition: all .2s;
-    transform: translateX(12px);
   }
 `;
 
@@ -147,8 +97,9 @@ const rederFilter = (skills, callbackSet, deleteSkill) => (
         id={ `skill${ id }` }
         type='checkbox'
         value={ skill }
-        onChange={ e => handleChange(e, callbackSet) }
+        onChange={ e => handleCheckboxChange(e, callbackSet) }
       />
+
       <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
 
       <Delete
@@ -158,20 +109,11 @@ const rederFilter = (skills, callbackSet, deleteSkill) => (
   )
 );
 
-const handleChange = (e, callbackSet) => {
-  const {
-    value,
-    checked
-  } = e.target;
-
-  callbackSet(value, checked);
-}
-
 const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
   <Container>
-    <SkillsList>
+    <SkillsListScroll>
       { rederFilter(skills, callbackSet, deleteSkill) }
-    </SkillsList>
+    </SkillsListScroll>
 
     <StyledAddItem
       callback={ callbackAdd }

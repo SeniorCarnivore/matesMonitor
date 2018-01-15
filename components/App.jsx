@@ -170,12 +170,14 @@ export default class App extends Component {
     this.updateAppData('skills', newSkills);
   }
 
-  deleteUserSkill = (skill, id) => {
+  taggleUserSkill = (skill, value, id) => {
     const { mates } = this.state;
+
+    console.log(skill, id)
 
     const downGraded = mates.map(mate => {
       if (mate.id === id) {
-        mate.skills = mate.skills.filter(oldSkill => oldSkill !== skill);
+        mate.skills[skill] = value;
       }
 
       return mate;
@@ -277,7 +279,7 @@ export default class App extends Component {
           <Details
             data={ mateDetailsLayout }
             callback={ this.addSkill }
-            deleteUserSkill={ this.deleteUserSkill }
+            taggleUserSkill={ this.taggleUserSkill }
             deleteMate={ this.deleteMate }
           />
         }

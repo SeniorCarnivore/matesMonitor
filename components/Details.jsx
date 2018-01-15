@@ -4,6 +4,9 @@ import styled from 'styled-components';
 
 import Avatar from './Avatar';
 import AddItem from './AddItem';
+import { Checkbox, Label, SkillsList, Skill} from './UI';
+
+import { handleCheckboxChange } from './Helpers';
 
 const Container = styled.div`
   display: flex;
@@ -22,29 +25,8 @@ const DetailsBlock = styled.div`
   margin-bottom: 20px;
 `;
 
-const SkillSet = styled.ul`
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  width: 200px;
-  margin: 0 0 10px 0;
-  padding-left: 60px;
-`;
-
-const Skill = styled.li`
-  display: flex;
-  width: 100%;
-
-  &:hover {
-    button {
-      opacity: 1;
-    }
-  }
-
-  &:before {
-    content: '💎';
-    margin-right: 5px;
-  }
+const MatesSkillsList = styled(SkillsList)`
+  margin: 20px 0 10px 40px;
 `;
 
 const DeleteSkill = styled.button`
@@ -138,24 +120,42 @@ const DeleteMate = styled.button`
   }
 `;
 
-const renderSkillset = (skills, deleteUserSkill, id) => (
-  <SkillSet>
+const renderSkillset = (skills, taggleUserSkill, id) => (
+  <MatesSkillsList>
     {
-      skills.map(skill => (
-        <Skill key={ skill }>
-          <span>{ skill }</span>
+
+
+
+
+
+      Object.keys(skills).map((skill, ind) => {
+        return <Skill key={ skill }>
+          
+          <Checkbox
+            id={ `skill${ ind }` }
+            type='checkbox'
+            value={ skill }
+            checked={ skills[skill] }
+            onChange={ e => handleCheckboxChange(e, taggleUserSkill, id) }
+          />
+
+          <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
 
           <DeleteSkill 
-            onClick={ () => deleteUserSkill(skill, id) }
+            onClick={ () => deleteUserSkill(skills[skill], ind) }
           />
         </Skill>
-      ))
+      })
+
+
+
+
+
     }
-  </SkillSet>
+  </MatesSkillsList>
 );
 
-
-const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
+const Details = ({ data, callback, taggleUserSkill, deleteMate }) => {
   const {
     id,
     name,
@@ -185,7 +185,7 @@ const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
       </DetailsBlock>
       
       { 
-        renderSkillset(skills, deleteUserSkill, id)
+        renderSkillset(skills, taggleUserSkill, id)
       }
 
       <AddItemWrapper>
@@ -200,8 +200,8 @@ const Details = ({ data, callback, deleteUserSkill, deleteMate }) => {
 Details.propTypes = {
   data: oneOfType([object, string]),
   callback: func,
-  deleteUserSkill: func,
   deleteMate: func,
+  taggleUserSkill: func,
   addMate: func
 };
 

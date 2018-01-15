@@ -16,3 +16,12 @@ export const getMateDetails = (mates, mateDetails) => {
 
   return details;
 }
+
+export const handleCheckboxChange = (e, callbackSet, id) => {
+  const {
+    value,
+    checked
+  } = e.target;
+
+  callbackSet(value, checked, id);
+}
