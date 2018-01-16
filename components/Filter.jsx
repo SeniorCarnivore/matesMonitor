@@ -18,6 +18,10 @@ const SkillsListScroll = styled(SkillsList)`
   overflow-y: scroll;
   direction: rtl;
 
+  input:checked + label:after {
+    transform: translateX(-4px);
+  }
+
   &::-webkit-scrollbar {
     width: 5px;
     background-color: #666;
@@ -109,7 +113,7 @@ const rederFilter = (skills, callbackSet, deleteSkill) => (
   )
 );
 
-const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
+const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) =>
   <Container>
     <SkillsListScroll>
       { rederFilter(skills, callbackSet, deleteSkill) }
@@ -120,7 +124,7 @@ const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
     />
 
   </Container>
-);
+;
 
 Filter.propTypes = {
   skills: array,

@@ -120,42 +120,27 @@ const DeleteMate = styled.button`
   }
 `;
 
-const renderSkillset = (skills, taggleUserSkill, id) => (
+const renderSkillset = (skills, toggleUserSkill, id) => (
   <MatesSkillsList>
     {
-
-
-
-
-
-      Object.keys(skills).map((skill, ind) => {
-        return <Skill key={ skill }>
-          
+      Object.keys(skills).map((skill, ind) =>
+        <Skill key={ skill }>
           <Checkbox
             id={ `skill${ ind }` }
             type='checkbox'
             value={ skill }
             checked={ skills[skill] }
-            onChange={ e => handleCheckboxChange(e, taggleUserSkill, id) }
+            onChange={ e => handleCheckboxChange(e, toggleUserSkill, id) }
           />
 
           <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
-
-          <DeleteSkill 
-            onClick={ () => deleteUserSkill(skills[skill], ind) }
-          />
         </Skill>
-      })
-
-
-
-
-
+      )
     }
   </MatesSkillsList>
 );
 
-const Details = ({ data, callback, taggleUserSkill, deleteMate }) => {
+const Details = ({data, callback, toggleUserSkill, deleteMate }) => {
   const {
     id,
     name,
@@ -164,7 +149,7 @@ const Details = ({ data, callback, taggleUserSkill, deleteMate }) => {
     rating
   } = data || false;
 
-  if(typeof data === 'string' ){
+  if (typeof data === 'string' ){
     return (
       <Container>
         { data }
@@ -176,16 +161,13 @@ const Details = ({ data, callback, taggleUserSkill, deleteMate }) => {
     <Container>
 
       <DetailsBlock>
-        <Avatar
-          name={ name }
-          surname={ surname }
-          url=''
-        />
+        <Avatar url=''/>
         { `${ name } ${ surname } (${ rating })` }
       </DetailsBlock>
       
       { 
-        renderSkillset(skills, taggleUserSkill, id)
+        skills &&
+        renderSkillset(skills, toggleUserSkill, id)
       }
 
       <AddItemWrapper>
@@ -195,13 +177,13 @@ const Details = ({ data, callback, taggleUserSkill, deleteMate }) => {
       <DeleteMate onClick={ () => deleteMate(id) }/>
     </Container>
   );
-}
+};
 
 Details.propTypes = {
   data: oneOfType([object, string]),
   callback: func,
   deleteMate: func,
-  taggleUserSkill: func,
+  toggleUserSkill: func,
   addMate: func
 };
 

@@ -1,7 +1,6 @@
 import 'babel-polyfill';
 import React, { Component } from 'react';
 import styled, { injectGlobal } from 'styled-components';
-import { number, array } from 'prop-types';
 
 import Filter from './Filter';
 import MatesList from './MatesList';
@@ -10,7 +9,8 @@ import AddMate from './AddMate';
 
 import {
   createMateId,
-  getMateDetails
+  getMateDetails,
+  createSkillsList
 } from './Helpers';
 
 import {
@@ -57,7 +57,7 @@ export default class App extends Component {
     excludedMates: [],
     mates: JSON.parse(localStorage.getItem('mates')) || null,
     skills: JSON.parse(localStorage.getItem('skills')) || []
-  }
+  };
 
   componentWillMount() {
     const {
@@ -98,11 +98,19 @@ export default class App extends Component {
   }
 
   addFilter = (newSkill) => {
-    const { skills } = this.state;
+    const {
+      skills,
+      mates
+    } = this.state;
 
     if (skills.indexOf(newSkill) < 0) {
       skills.push(newSkill);
+      
+      mates.map(mate => {
+        mate.skills[newSkill] = false;
+      });
 
+      this.updateAppData('mates', mates);
       this.updateAppData('skills', skills);
     }
   }
@@ -110,13 +118,12 @@ export default class App extends Component {
   addSkill = (skill) => {
     const {
       mates,
-      mateDetails,
-      skills
+      mateDetails
     } = this.state;
 
     const updatedMates = mates.map(mate => {
       if (mate.id === mateDetails) {
-        mate.skills.push(skill);
+        mate.skills[skill] = true;
       }
 
       return mate;
@@ -164,16 +171,26 @@ export default class App extends Component {
   }
 
   deleteSkill = (skill) => {
-    const oldSkills = this.state.skills;
-    const newSkills = oldSkills.filter(oldSkill => oldSkill !== skill);
+    const {
+      skills,
+      mates
+    } = this.state;
 
+    const newSkills = skills.filter(
+      oldSkill => oldSkill !== skill
+    );
+
+    const newMates = mates.map(mate => {
+      delete mate.skills[skill];
+      return mate;
+    });
+
+    this.updateAppData('mates', newMates);
     this.updateAppData('skills', newSkills);
   }
 
-  taggleUserSkill = (skill, value, id) => {
+  toggleUserSkill = (skill, value, id) => {
     const { mates } = this.state;
-
-    console.log(skill, id)
 
     const downGraded = mates.map(mate => {
       if (mate.id === id) {
@@ -187,13 +204,16 @@ export default class App extends Component {
   }
 
   addMate = (mate) => {
-    const { mates } = this.state;
+    const {
+      mates,
+      skills
+    } = this.state;
 
     let oldTeam = mates;
     const identifiers = mates.map(mate => mate.id);
     const mateId = createMateId(identifiers);
 
-    mate.skills = [];
+    mate.skills = createSkillsList(skills);
     mate.rating = 0;
     mate.id = mateId;
 
@@ -225,9 +245,9 @@ export default class App extends Component {
 
   dropFilter = () => {
     this.setState({
-        filter: null,
-        excludedMates: []
-    })
+      filter: null,
+      excludedMates: []
+    });
   }
 
   render() {
@@ -279,7 +299,7 @@ export default class App extends Component {
           <Details
             data={ mateDetailsLayout }
             callback={ this.addSkill }
-            taggleUserSkill={ this.taggleUserSkill }
+            toggleUserSkill={ this.toggleUserSkill }
             deleteMate={ this.deleteMate }
           />
         }
@@ -288,4 +308,4 @@ export default class App extends Component {
       </Container>
     );
   }
-};
+}

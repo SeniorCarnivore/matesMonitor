@@ -19,7 +19,7 @@ const Container = styled.div`
   color: ${ props => props.url ? 'transparent' : '#000' };
 `;
 
-const Avatar = ({ name, surname, url }) => 
+const Avatar = ({ url }) => 
   <Container url={ url }>
     <span>
       { Avatars[Math.round(Math.random() * Avatars.length)] }

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { object, func, number } from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
 
 const DropFilterContainer = styled.button`
@@ -29,7 +28,7 @@ const DropAppContainer = styled.button`
 const dropApp = () => {
   localStorage.clear();
   document.location.reload();
-}
+};
 
 export const DropApp = () => (
   <DropAppContainer onClick={ dropApp }>

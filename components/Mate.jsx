@@ -45,11 +45,11 @@ const Control = styled.button`
 
 const handleClick = (id, callback) => {
   callback(id);
-}
+};
 
 const handleDetermination = (id, determination, determineMate) => {
   determineMate(id, determination);
-}
+};
 
 const Mate = ({ data, filtered, mateDetails, callback, determineMate }) => {
   const {

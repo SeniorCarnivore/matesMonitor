@@ -47,4 +47,4 @@ export default class AddItem extends PureComponent {
       </Container>
     );
   }
-};
+}

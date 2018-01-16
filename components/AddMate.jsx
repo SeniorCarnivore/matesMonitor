@@ -43,11 +43,11 @@ const FormSubmit = styled(Submit)`
 export default class AddMate extends Component {
   static propTypes = {
     callBack: func
-  };
+  }
 
   state = {
     error: false
-  };
+  }
 
   handleChange = (e) => {
     const {
@@ -124,4 +124,4 @@ export default class AddMate extends Component {
       </Container>
     );
   }
-};
+}

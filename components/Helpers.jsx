@@ -6,16 +6,17 @@ export const createMateId = (keys) => {
   const uniqueId = idIsUnique ? id : createMateId(keys);
 
   return uniqueId;
-}
+};
 
 export const getMateDetails = (mates, mateDetails) => {
-  let details = `There is no mate selected (๑◕︵◕๑)`;
+  let details = 'There is no mate selected (๑◕︵◕๑)';
+
   if (mateDetails !== 0 && mates.length !== 0) {
     details = mates.find(mate => mate.id === mateDetails);
   }
 
   return details;
-}
+};
 
 export const handleCheckboxChange = (e, callbackSet, id) => {
   const {
@@ -24,4 +25,14 @@ export const handleCheckboxChange = (e, callbackSet, id) => {
   } = e.target;
 
   callbackSet(value, checked, id);
-}
+};
+
+export const createSkillsList = (skills) => {
+  const mateSkills = {};
+
+  skills.map(skill => {
+    mateSkills[skill] = false;
+  });
+
+  return mateSkills;
+};
