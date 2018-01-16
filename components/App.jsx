@@ -115,24 +115,6 @@ export default class App extends Component {
     }
   }
 
-  addSkill = (skill) => {
-    const {
-      mates,
-      mateDetails
-    } = this.state;
-
-    const updatedMates = mates.map(mate => {
-      if (mate.id === mateDetails) {
-        mate.skills[skill] = true;
-      }
-
-      return mate;
-    });
-
-    this.updateAppData('mates', updatedMates);
-    this.addFilter(skill);
-  }
-
   setMateDetails = (id) => {
     this.setState({
       mateDetails: id
@@ -219,6 +201,10 @@ export default class App extends Component {
 
     oldTeam.push(mate);
 
+    this.setState({
+      mateDetails: mateId,
+    });
+
     this.updateAppData('mates', oldTeam);
   }
 
@@ -230,8 +216,8 @@ export default class App extends Component {
     } = this.state;
 
     const allMates = mates;
-    const firstMateId = allMates[0].id;
-    const existingMates = allMates.filter(mate => mate.id !== id);
+    const existingMates = allMates.filter(mate => mate && mate.id !== id);
+    const firstMateId = existingMates[0] && existingMates[0].id;
     const newDetails = mateDetails === id ? firstMateId : id;
     const actualExcluded = excludedMates.filter(existingId => existingId !== id);
 
@@ -298,7 +284,7 @@ export default class App extends Component {
           mates &&
           <Details
             data={ mateDetailsLayout }
-            callback={ this.addSkill }
+            callback={ this.addFilter }
             toggleUserSkill={ this.toggleUserSkill }
             deleteMate={ this.deleteMate }
           />
