@@ -1,9 +1,13 @@
 import React from 'react';
-import { array, func } from 'prop-types';
+import { object, func } from 'prop-types';
 import styled from 'styled-components';
 
 import AddItem from './AddItem';
-import { Checkbox, Label, SkillsList } from './UI';
+import {
+  Checkbox,
+  Label,
+  SkillsList
+} from './UI';
 
 import { handleCheckboxChange } from './Helpers';
 
@@ -95,28 +99,28 @@ const StyledAddItem = styled(AddItem)`
 `;
 
 const rederFilter = (skills, callbackSet, deleteSkill) => (
-  skills.map((skill, id) => 
+  skills.map((skill, ind) => (
     <Skill key={ skill }>
       <Checkbox
-        id={ `skill${ id }` }
+        id={ `skill${ ind }` }
         type='checkbox'
         value={ skill }
         onChange={ e => handleCheckboxChange(e, callbackSet) }
       />
 
-      <Label htmlFor={ `skill${ id }` } >{ skill }</Label>
+      <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
 
       <Delete
         onClick={ () => deleteSkill(skill) }
       />
     </Skill>
-  )
+  ))
 );
 
-const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) =>
+const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
   <Container>
     <SkillsListScroll>
-      { rederFilter(skills, callbackSet, deleteSkill) }
+      { rederFilter(Array.from(skills), callbackSet, deleteSkill) }
     </SkillsListScroll>
 
     <StyledAddItem
@@ -124,10 +128,10 @@ const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) =>
     />
 
   </Container>
-;
+);
 
 Filter.propTypes = {
-  skills: array,
+  skills: object,
   callbackSet: func,
   callbackAdd: func,
   deleteSkill: func

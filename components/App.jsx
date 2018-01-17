@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React, { Component } from 'react';
 import styled, { injectGlobal } from 'styled-components';
 
+import Header from './Header';
 import Filter from './Filter';
 import MatesList from './MatesList';
 import Details from './Details';
@@ -12,11 +13,6 @@ import {
   getMateDetails,
   createSkillsList
 } from './Helpers';
-
-import {
-  DropFilter,
-  DropApp
-} from './TestControls';
 
 import RESPONSED_MATES from '../mates.json';
 import RESPONSED_SKILLS from '../skills.json';
@@ -41,12 +37,26 @@ injectGlobal`
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: calC(100vh);
 `;
 
-const Sidebar = styled.div`
-  width: 35%;
+const Body = styled.div`
+  display: flex;
+  width: 100%;
+  height: calC(100vh);
+`;
+
+const SidebarLeft = styled.div`
+  width: 30%;
+  box-sizing: border-box;
+  background-color: #202020;
+  box-shadow: 0 0px 10px 0 #000 inset;
+`;
+
+const SidebarRight = styled.div`
+  width: 30%;
   box-sizing: border-box;
   background-color: #202020;
   box-shadow: 0 0px 10px 0 #000 inset;
@@ -56,7 +66,7 @@ export default class App extends Component {
   state = {
     excludedMates: [],
     mates: JSON.parse(localStorage.getItem('mates')) || null,
-    skills: JSON.parse(localStorage.getItem('skills')) || []
+    skills: new Set(JSON.parse(localStorage.getItem('skills'))) || new Set()
   };
 
   componentWillMount() {
@@ -71,7 +81,7 @@ export default class App extends Component {
       this.updateAppData('mates', RESPONSED_MATES);
     }
 
-    if (!skills || !skills.length) {
+    if (!skills || !skills.size) {
       this.updateAppData('skills', RESPONSED_SKILLS);
     }
 
@@ -81,15 +91,18 @@ export default class App extends Component {
   }
 
   updateAppData = (key, data) => {
+    let newData = key === 'skills' ? new Set([ ...data ]) : [ ...data];
+
     this.setState({
-      [key]: data
+      [key]: newData
     });
 
-    localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(newData));
   }
 
   setFilter = (skill, checked) => {
-    let filterStamp = this.state.filter || {};
+    const { filter } = this.state || {};
+    const filterStamp = { ...filter };
     filterStamp[skill] = checked;
 
     this.setState({
@@ -97,21 +110,21 @@ export default class App extends Component {
     });
   }
 
-  addFilter = (newSkill) => {
+  addFilter = newSkill => {
     const {
       skills,
       mates
     } = this.state;
 
-    if (skills.indexOf(newSkill) < 0) {
-      skills.push(newSkill);
-      
-      mates.map(mate => {
-        mate.skills[newSkill] = false;
-      });
+    if (!skills.has(newSkill)) {
+      const newSkills = new Set([ ...skills, newSkill ]);
+      console.log(newSkills)
+      const newMates = [...mates];
 
-      this.updateAppData('mates', mates);
-      this.updateAppData('skills', skills);
+      newMates.map(mate => mate.skills[newSkill] = false);
+
+      this.updateAppData('skills', newSkills);
+      this.updateAppData('mates', newMates);
     }
   }
 
@@ -127,24 +140,24 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
-    let updatedMates = mates;
-
     if (accept) {
-      updatedMates = mates.map(mate => {
-        if (mate.id === id) {
-          mate.rating += 1;
-        }
+      mates.filter(mate => {
+        const newMate = { ...mate };
   
-        return mate;
+        if (newMate.id === id) {
+          newMate.rating += 1;
+        }
+
+        return newMate;
       });
   
-      this.updateAppData('mates', updatedMates);
+      this.updateAppData('mates', mates);
       this.dropFilter();
 
     } else {
 
-      const newExclusion = excludedMates;
-      newExclusion.push(id);
+      const newExclusion = { ...excludedMates, ...id};
+      // newExclusion.push(id);
 
       this.setState({
         excludedMates: newExclusion
@@ -158,17 +171,15 @@ export default class App extends Component {
       mates
     } = this.state;
 
-    const newSkills = skills.filter(
-      oldSkill => oldSkill !== skill
-    );
+    skills.delete(skill);
 
     const newMates = mates.map(mate => {
       delete mate.skills[skill];
       return mate;
     });
 
+    this.updateAppData('skills', skills);
     this.updateAppData('mates', newMates);
-    this.updateAppData('skills', newSkills);
   }
 
   toggleUserSkill = (skill, value, id) => {
@@ -191,7 +202,7 @@ export default class App extends Component {
       skills
     } = this.state;
 
-    let oldTeam = mates;
+    let oldTeam = { ...mates };
     const identifiers = mates.map(mate => mate.id);
     const mateId = createMateId(identifiers);
 
@@ -199,13 +210,11 @@ export default class App extends Component {
     mate.rating = 0;
     mate.id = mateId;
 
-    oldTeam.push(mate);
-
     this.setState({
       mateDetails: mateId,
     });
 
-    this.updateAppData('mates', oldTeam);
+    this.updateAppData('mates', [...oldTeam, mate]);
   }
 
   deleteMate = (id) => {
@@ -215,8 +224,7 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
-    const allMates = mates;
-    const existingMates = allMates.filter(mate => mate && mate.id !== id);
+    const existingMates = mates.filter(mate => mate && mate.id !== id);
     const firstMateId = existingMates[0] && existingMates[0].id;
     const newDetails = mateDetails === id ? firstMateId : id;
     const actualExcluded = excludedMates.filter(existingId => existingId !== id);
@@ -249,48 +257,50 @@ export default class App extends Component {
 
     return (
       <Container> 
+        <Header callback={ this.dropFilter }/>
 
-        <Sidebar>
+        <Body>
+          <SidebarLeft>
+            {
+              mates &&
+              <MatesList
+                mates={ mates }
+                filter={ filter }
+                mateDetails={ mateDetails }
+                excludedMates={ excludedMates }
+                determineMate={ this.determineMate }
+                callback={ this.setMateDetails }
+              />
+            }
 
-          {
-            skills &&
-            <Filter
-              skills={ skills }
-              callbackSet={ this.setFilter }
-              callbackAdd={ this.addFilter }
-              deleteSkill={ this.deleteSkill }
-            />
-          }
+            <AddMate callback={ this.addMate }/>
+
+          </SidebarLeft>
 
           {
             mates &&
-            <MatesList
-              mates={ mates }
-              filter={ filter }
-              mateDetails={ mateDetails }
-              excludedMates={ excludedMates }
-              determineMate={ this.determineMate }
-              callback={ this.setMateDetails }
+            <Details
+              data={ mateDetailsLayout }
+              callback={ this.addFilter }
+              toggleUserSkill={ this.toggleUserSkill }
+              deleteMate={ this.deleteMate }
             />
           }
 
-          <AddMate callback={ this.addMate }/>
-          
-          <DropFilter callback={ this.dropFilter }/>
+          <SidebarRight>
+            {
+              skills &&
+              <Filter
+                skills={ skills }
+                callbackSet={ this.setFilter }
+                callbackAdd={ this.addFilter }
+                deleteSkill={ this.deleteSkill }
+              />
+            }
 
-        </Sidebar>
+          </SidebarRight>
+        </Body>
 
-        {
-          mates &&
-          <Details
-            data={ mateDetailsLayout }
-            callback={ this.addFilter }
-            toggleUserSkill={ this.toggleUserSkill }
-            deleteMate={ this.deleteMate }
-          />
-        }
-
-        <DropApp/>
       </Container>
     );
   }

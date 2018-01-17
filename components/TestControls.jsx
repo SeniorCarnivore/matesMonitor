@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const DropFilterContainer = styled.button`
-  width: 100%;
-  height: 5vh;
+  height: 50px;
   border: 0;
   margin-top: auto;
   font-size: 20px;
@@ -13,11 +12,10 @@ const DropFilterContainer = styled.button`
 `;
 
 const DropAppContainer = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 4px 9px 1px 6px;
-  font-size: 20px;
+  width: 50px;
+
+  height: 50px;
+  font-size: 25px;
   text-align: center;
   border: 0;
   background-color: #ff9d9d;
@@ -40,4 +38,4 @@ export const DropFilter = ({ callback }) => (
   <DropFilterContainer onClick={ callback }>
     💥 Drop Filter 💥
   </DropFilterContainer>
-);
+)

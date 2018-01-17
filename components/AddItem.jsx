@@ -16,9 +16,17 @@ export default class AddItem extends PureComponent {
     callback: func
   }
 
-  handleChange = (value) => {
+  state = {
+    value: ''
+  }
+
+  handleChange = (e) => {
+    const {
+      value
+    } = e.target;
+
     this.setState({
-      value: value
+      value
     });
   }
 
@@ -35,13 +43,13 @@ export default class AddItem extends PureComponent {
   }
 
   render() {
-    const value = this.state ? this.state.value : '';
+    const { value } = this.state;
 
     return (
       <Container>
         <Input
           value={ value }
-          onChange = { e => this.handleChange(e.target.value) }
+          onChange = { this.handleChange }
         />
         <Submit onClick={ this.handleSubmit } >✨ Add ✨</Submit>
       </Container>
