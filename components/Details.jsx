@@ -1,10 +1,20 @@
 import React from 'react';
-import { oneOfType, string, object, func } from 'prop-types';
+import {
+  oneOfType,
+  string,
+  object,
+  func
+} from 'prop-types';
 import styled from 'styled-components';
 
 import Avatar from './Avatar';
 import AddItem from './AddItem';
-import { Checkbox, Label, SkillsList, Skill} from './UI';
+import {
+  Checkbox,
+  Label,
+  SkillsList,
+  Skill
+} from './UI';
 
 import { handleCheckboxChange } from './Helpers';
 
@@ -26,45 +36,16 @@ const DetailsBlock = styled.div`
 `;
 
 const MatesSkillsList = styled(SkillsList)`
-  margin: 20px 0 10px 40px;
+  flex-wrap: wrap;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px 60px 10px 60px;
 `;
 
-const DeleteSkill = styled.button`
-  position: relative;
-  width: 25px;
-  height: 25px;
-  margin-left: auto;
-  padding: 0;
-  border: 0;
-  font-size: 14px;
-  line-height: 25px;
-  cursor: pointer;
-  background-color: transparent;
-  opacity: 0;
-  transition: all .2s;
-
-  &:hover {
-    &:before {
-      transform: rotate(90deg);
-    }
-  }
-
-  &:before {
-    content: '❌';
-    display: block;
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    line-height: 25px;
-    pointer-events: none;
-    transition: all .2s;
-    transform-origin: center;
-    transform: rotate(0deg);
-  }
+const MatesSkill = styled(Skill)`
+  min-width: 50%;
+  max-width: 50%;
 `;
 
 const AddItemWrapper = styled.div`
@@ -124,7 +105,7 @@ const renderSkillset = (skills, toggleUserSkill, id) => (
   <MatesSkillsList>
     {
       Object.keys(skills).map((skill, ind) =>
-        <Skill key={ skill }>
+        <MatesSkill key={ skill }>
           <Checkbox
             id={ `skill${ ind }` }
             type='checkbox'
@@ -134,7 +115,7 @@ const renderSkillset = (skills, toggleUserSkill, id) => (
           />
 
           <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
-        </Skill>
+        </MatesSkill>
       )
     }
   </MatesSkillsList>

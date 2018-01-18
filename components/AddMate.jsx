@@ -9,8 +9,9 @@ import {
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
-  height: 5vh;
+  margin-top: auto;
   padding: 10px 20px;
 
   &:before {
@@ -32,7 +33,7 @@ const Container = styled.div`
 `;
 
 const FormInput = styled(Input)`
-  margin-right: 20px;
+  margin: 0 0 10px 0;
   z-index: 1;
 `;
 

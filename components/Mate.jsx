@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { object, func, number } from 'prop-types';
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ const Container = styled.div`
   transition: all .5s;
   direction: ltr;
   background-color: ${props => props.isActive ? '#2b2b2b' : 'transparent'};
+  cursor: pointer;
 
   &:hover {
     background-color: #666;
@@ -22,8 +23,6 @@ const Container = styled.div`
 const Identity = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 20px;
-  cursor: pointer;
 `;
 
 const RatingPanel = styled.div`
@@ -60,8 +59,11 @@ const Mate = ({ data, filtered, mateDetails, callback, determineMate }) => {
   } = data;
 
   return (
-    <Container isActive={ mateDetails === id }>
-      <Identity onClick={ () => handleClick(id, callback) } >
+    <Container
+      isActive={ mateDetails === id }
+      onClick={ () => handleClick(id, callback) }
+    >
+      <Identity>
         <Avatar
           name={ name }
           surname={ surname }

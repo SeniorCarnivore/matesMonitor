@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 export const Input = styled.input`
@@ -69,11 +68,6 @@ export const Label = styled.label`
 
 export const SkillsList = styled.ul`
   display: flex;
-  flex-direction: column;
-  width: calc(100% - 20px);
-  margin: 20px 0 10px 20px;
-  padding: 0 20px;
-  box-sizing: border-box;
   font-size: 18px;
   list-style: none;
 `;

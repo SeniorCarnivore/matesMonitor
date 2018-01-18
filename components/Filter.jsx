@@ -14,11 +14,16 @@ import { handleCheckboxChange } from './Helpers';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 30vh;
-  margin-bottom: 2.5vh;
+  height: 100%;
 `;
 
 const SkillsListScroll = styled(SkillsList)`
+  flex-direction: column;
+  width: calc(100% - 20px);
+  height: 100%;
+  margin: 20px 0 10px 20px;
+  padding: 0 20px;
+  box-sizing: border-box;
   overflow-y: scroll;
   direction: rtl;
 
@@ -70,6 +75,7 @@ const Delete = styled.button`
   font-size: 17px;
   opacity: 0;
   transition: all .2s;
+  outline: none;
 
   &:hover {
     &:before {
@@ -94,36 +100,38 @@ const Delete = styled.button`
   }
 `;
 
-const StyledAddItem = styled(AddItem)`
-  height: 5vh;
-`;
+const rederFilter = (skills, filter, callbackSet, deleteSkill) => (
 
-const rederFilter = (skills, callbackSet, deleteSkill) => (
-  skills.map((skill, ind) => (
-    <Skill key={ skill }>
-      <Checkbox
-        id={ `skill${ ind }` }
-        type='checkbox'
-        value={ skill }
-        onChange={ e => handleCheckboxChange(e, callbackSet) }
-      />
+  skills.map((skill, ind) => {
+    const isChecked = filter && filter[skill] || false;
 
-      <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
+    return (
+      <Skill key={ skill }>
+        <Checkbox
+          id={ `skill${ ind }` }
+          type='checkbox'
+          value={ skill }
+          checked={ isChecked }
+          onChange={ e => handleCheckboxChange(e, callbackSet) }
+        />
 
-      <Delete
-        onClick={ () => deleteSkill(skill) }
-      />
-    </Skill>
-  ))
+        <Label htmlFor={ `skill${ ind }` } >{ skill }</Label>
+
+        <Delete
+          onClick={ () => deleteSkill(skill) }
+        />
+      </Skill>
+    );
+  })
 );
 
-const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
+const Filter = ({ skills, filter, callbackSet, callbackAdd, deleteSkill }) => (
   <Container>
     <SkillsListScroll>
-      { rederFilter(Array.from(skills), callbackSet, deleteSkill) }
+      { rederFilter(Array.from(skills), filter, callbackSet, deleteSkill) }
     </SkillsListScroll>
 
-    <StyledAddItem
+    <AddItem
       callback={ callbackAdd }
     />
 
@@ -132,6 +140,7 @@ const Filter = ({ skills, callbackSet, callbackAdd, deleteSkill }) => (
 
 Filter.propTypes = {
   skills: object,
+  filter: object,
   callbackSet: func,
   callbackAdd: func,
   deleteSkill: func

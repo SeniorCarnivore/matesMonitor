@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const createMateId = (keys) => {
   const id = Math.floor(Math.random() * ( 1000 - 0 + 1 )) + 1;
   const idIsUnique = keys.indexOf(id) < 0;
@@ -30,8 +28,9 @@ export const handleCheckboxChange = (e, callbackSet, id) => {
 export const createSkillsList = (skills) => {
   const mateSkills = {};
 
-  skills.map(skill => {
+  Array.from(skills).map(skill => {
     mateSkills[skill] = false;
+    return skill;
   });
 
   return mateSkills;

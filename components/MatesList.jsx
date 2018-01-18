@@ -14,10 +14,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: calc(100% - 20px);
-  min-height: 50vh;
-  max-height: 50vh;
-  height: 50vh;
-  margin: 0 2.5vh 0 20px;
+  max-height: calc(100vh - 129px);
+  height: 100%;
+  margin: 20px 0 0 20px;
   overflow-y: scroll;
   direction: rtl;
 

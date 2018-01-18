@@ -48,14 +48,9 @@ const Body = styled.div`
   height: calC(100vh);
 `;
 
-const SidebarLeft = styled.div`
-  width: 30%;
-  box-sizing: border-box;
-  background-color: #202020;
-  box-shadow: 0 0px 10px 0 #000 inset;
-`;
-
-const SidebarRight = styled.div`
+const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 30%;
   box-sizing: border-box;
   background-color: #202020;
@@ -64,6 +59,7 @@ const SidebarRight = styled.div`
 
 export default class App extends Component {
   state = {
+    filter: null,
     excludedMates: [],
     mates: JSON.parse(localStorage.getItem('mates')) || null,
     skills: new Set(JSON.parse(localStorage.getItem('skills'))) || new Set()
@@ -91,8 +87,8 @@ export default class App extends Component {
   }
 
   updateAppData = (key, data) => {
-    let newData = key === 'skills' ? new Set([ ...data ]) : [ ...data];
-
+    const newData = key === 'skills' ? new Set([ ...data ]) : [ ...data];
+    console.log(key, newData)
     this.setState({
       [key]: newData
     });
@@ -101,7 +97,7 @@ export default class App extends Component {
   }
 
   setFilter = (skill, checked) => {
-    const { filter } = this.state || {};
+    const { filter = {} } = this.state;
     const filterStamp = { ...filter };
     filterStamp[skill] = checked;
 
@@ -118,7 +114,6 @@ export default class App extends Component {
 
     if (!skills.has(newSkill)) {
       const newSkills = new Set([ ...skills, newSkill ]);
-      console.log(newSkills)
       const newMates = [...mates];
 
       newMates.map(mate => mate.skills[newSkill] = false);
@@ -202,7 +197,7 @@ export default class App extends Component {
       skills
     } = this.state;
 
-    let oldTeam = { ...mates };
+    let oldTeam = [ ...mates ];
     const identifiers = mates.map(mate => mate.id);
     const mateId = createMateId(identifiers);
 
@@ -214,7 +209,7 @@ export default class App extends Component {
       mateDetails: mateId,
     });
 
-    this.updateAppData('mates', [...oldTeam, mate]);
+    this.updateAppData('mates', [ ...oldTeam, mate]);
   }
 
   deleteMate = (id) => {
@@ -237,6 +232,14 @@ export default class App extends Component {
     this.updateAppData('mates', existingMates);
   }
 
+  importJson = data => {
+    const fields = Object.keys(data);
+    fields.map(filed => {
+      this.updateAppData(filed, JSON.parse(data[filed]));
+      return filed;
+    });
+  }
+
   dropFilter = () => {
     this.setState({
       filter: null,
@@ -257,15 +260,18 @@ export default class App extends Component {
 
     return (
       <Container> 
-        <Header callback={ this.dropFilter }/>
+        <Header
+          callback={ this.dropFilter }
+          importJson={ this.importJson }
+        />
 
         <Body>
-          <SidebarLeft>
+          <Sidebar>
             {
               mates &&
               <MatesList
                 mates={ mates }
-                filter={ filter }
+                filter={ filter && filter }
                 mateDetails={ mateDetails }
                 excludedMates={ excludedMates }
                 determineMate={ this.determineMate }
@@ -275,7 +281,7 @@ export default class App extends Component {
 
             <AddMate callback={ this.addMate }/>
 
-          </SidebarLeft>
+          </Sidebar>
 
           {
             mates &&
@@ -287,18 +293,19 @@ export default class App extends Component {
             />
           }
 
-          <SidebarRight>
+          <Sidebar>
             {
               skills &&
               <Filter
                 skills={ skills }
+                filter={ filter }
                 callbackSet={ this.setFilter }
                 callbackAdd={ this.addFilter }
                 deleteSkill={ this.deleteSkill }
               />
             }
 
-          </SidebarRight>
+          </Sidebar>
         </Body>
 
       </Container>
