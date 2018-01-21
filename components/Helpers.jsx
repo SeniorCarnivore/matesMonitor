@@ -35,3 +35,17 @@ export const createSkillsList = (skills) => {
 
   return mateSkills;
 };
+
+export const duplicate = data => {
+  if (Array.isArray(data)) {
+    return [ ...data ];
+  }
+
+  if (typeof data === 'object') {
+    if (data && data.size) {
+      return new Set([ ...data ]);
+    }
+
+    return { ...data };
+  } 
+};

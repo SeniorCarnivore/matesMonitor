@@ -20,7 +20,7 @@ export default class AddItem extends PureComponent {
     value: ''
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
     const {
       value
     } = e.target;
@@ -32,7 +32,6 @@ export default class AddItem extends PureComponent {
 
   handleSubmit = () => {
     const { value } = this.state;
-
     const { callback } = this.props;
 
     callback(value);

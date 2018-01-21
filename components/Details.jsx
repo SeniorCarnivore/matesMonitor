@@ -121,7 +121,7 @@ const renderSkillset = (skills, toggleUserSkill, id) => (
   </MatesSkillsList>
 );
 
-const Details = ({data, callback, toggleUserSkill, deleteMate }) => {
+const Details = ({ data, callback, toggleUserSkill, deleteMate }) => {
   const {
     id,
     name,
@@ -130,7 +130,7 @@ const Details = ({data, callback, toggleUserSkill, deleteMate }) => {
     rating
   } = data || false;
 
-  if (typeof data === 'string' ){
+  if (typeof data === 'string' ) {
     return (
       <Container>
         { data }
@@ -146,7 +146,7 @@ const Details = ({data, callback, toggleUserSkill, deleteMate }) => {
         { `${ name } ${ surname } (${ rating })` }
       </DetailsBlock>
       
-      { 
+      {
         skills &&
         renderSkillset(skills, toggleUserSkill, id)
       }

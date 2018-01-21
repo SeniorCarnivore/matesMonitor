@@ -11,7 +11,8 @@ import AddMate from './AddMate';
 import {
   createMateId,
   getMateDetails,
-  createSkillsList
+  createSkillsList,
+  duplicate
 } from './Helpers';
 
 import RESPONSED_MATES from '../mates.json';
@@ -78,7 +79,7 @@ export default class App extends Component {
     }
 
     if (!skills || !skills.size) {
-      this.updateAppData('skills', RESPONSED_SKILLS);
+      this.updateAppData('skills', new Set(RESPONSED_SKILLS));
     }
 
     this.setState({
@@ -87,22 +88,23 @@ export default class App extends Component {
   }
 
   updateAppData = (key, data) => {
-    const newData = key === 'skills' ? new Set([ ...data ]) : [ ...data];
-    console.log(key, newData)
+    const stateData = duplicate(data);
+    const storageData = key === 'skills' ? Array.from(stateData) : stateData;
+
     this.setState({
-      [key]: newData
+      [key]: stateData
     });
 
-    localStorage.setItem(key, JSON.stringify(newData));
+    localStorage.setItem(key, JSON.stringify(storageData));
   }
 
   setFilter = (skill, checked) => {
     const { filter = {} } = this.state;
-    const filterStamp = { ...filter };
-    filterStamp[skill] = checked;
+    const filterToUpdate = duplicate(filter);
+    filterToUpdate[skill] = checked;
 
     this.setState({
-      filter: filterStamp
+      filter: filterToUpdate
     });
   }
 
@@ -112,18 +114,17 @@ export default class App extends Component {
       mates
     } = this.state;
 
-    if (!skills.has(newSkill)) {
-      const newSkills = new Set([ ...skills, newSkill ]);
-      const newMates = [...mates];
+    const skillsToUpdate = duplicate(skills);
+    const matesToUpdate = duplicate(mates);
 
-      newMates.map(mate => mate.skills[newSkill] = false);
+    skillsToUpdate.add(newSkill);
+    matesToUpdate.map(mate => mate.skills[newSkill] = false);
 
-      this.updateAppData('skills', newSkills);
-      this.updateAppData('mates', newMates);
-    }
+    this.updateAppData('skills', skillsToUpdate);
+    this.updateAppData('mates', matesToUpdate);
   }
 
-  setMateDetails = (id) => {
+  setMateDetails = id => {
     this.setState({
       mateDetails: id
     });
@@ -135,52 +136,53 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
+    const matesToUpdate = duplicate(mates);
+    const excludedMatesToUpdate = [ ...duplicate(excludedMates), id ];
+
     if (accept) {
-      mates.filter(mate => {
-        const newMate = { ...mate };
-  
-        if (newMate.id === id) {
-          newMate.rating += 1;
+      matesToUpdate.filter(mate => {
+        if (mate.id === id) {
+          mate.rating += 1;
         }
 
-        return newMate;
+        return mate;
       });
   
-      this.updateAppData('mates', mates);
+      this.updateAppData('mates', matesToUpdate);
       this.dropFilter();
 
     } else {
-
-      const newExclusion = { ...excludedMates, ...id};
-      // newExclusion.push(id);
-
       this.setState({
-        excludedMates: newExclusion
+        excludedMates: excludedMatesToUpdate
       });
     }
   }
 
-  deleteSkill = (skill) => {
+  deleteSkill = skill => {
     const {
       skills,
       mates
     } = this.state;
 
-    skills.delete(skill);
+    const skillsToUpdate = duplicate(skills);
+    const matesToUpdate = duplicate(mates);
 
-    const newMates = mates.map(mate => {
+    skillsToUpdate.delete(skill);
+
+    matesToUpdate.map(mate => {
       delete mate.skills[skill];
       return mate;
     });
 
-    this.updateAppData('skills', skills);
-    this.updateAppData('mates', newMates);
+    this.updateAppData('skills', skillsToUpdate);
+    this.updateAppData('mates', matesToUpdate);
   }
 
   toggleUserSkill = (skill, value, id) => {
     const { mates } = this.state;
+    const matesToUpdate = duplicate(mates);
 
-    const downGraded = mates.map(mate => {
+    matesToUpdate.map(mate => {
       if (mate.id === id) {
         mate.skills[skill] = value;
       }
@@ -188,20 +190,21 @@ export default class App extends Component {
       return mate;
     });
 
-    this.updateAppData('mates', downGraded);
+    this.updateAppData('mates', matesToUpdate);
   }
 
-  addMate = (mate) => {
+  addMate = mate => {
     const {
       mates,
       skills
     } = this.state;
 
-    let oldTeam = [ ...mates ];
-    const identifiers = mates.map(mate => mate.id);
+    const matesToUpdate = duplicate(mates);
+    const skillsToUpdate = duplicate(skills);
+    const identifiers = matesToUpdate.map(mate => mate.id);
     const mateId = createMateId(identifiers);
 
-    mate.skills = createSkillsList(skills);
+    mate.skills = createSkillsList(skillsToUpdate);
     mate.rating = 0;
     mate.id = mateId;
 
@@ -209,7 +212,7 @@ export default class App extends Component {
       mateDetails: mateId,
     });
 
-    this.updateAppData('mates', [ ...oldTeam, mate]);
+    this.updateAppData('mates', [ ...matesToUpdate, mate ]);
   }
 
   deleteMate = (id) => {
@@ -219,10 +222,13 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
-    const existingMates = mates.filter(mate => mate && mate.id !== id);
+    const matesToUpdate = duplicate(mates);
+    const excludedMatesToUpdate = duplicate(excludedMates);
+
+    const existingMates = matesToUpdate.filter(mate => mate && mate.id !== id);
     const firstMateId = existingMates[0] && existingMates[0].id;
     const newDetails = mateDetails === id ? firstMateId : id;
-    const actualExcluded = excludedMates.filter(existingId => existingId !== id);
+    const actualExcluded = excludedMatesToUpdate.filter(existingId => existingId !== id);
 
     this.setState({
       mateDetails: newDetails,
@@ -234,6 +240,7 @@ export default class App extends Component {
 
   importJson = data => {
     const fields = Object.keys(data);
+
     fields.map(filed => {
       this.updateAppData(filed, JSON.parse(data[filed]));
       return filed;
@@ -256,7 +263,7 @@ export default class App extends Component {
       excludedMates
     } = this.state;
 
-    const mateDetailsLayout = getMateDetails(mates, mateDetails);
+    const mateDetailsLayout = getMateDetails(duplicate(mates), mateDetails);
 
     return (
       <Container> 

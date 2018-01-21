@@ -47,10 +47,12 @@ export default class AddMate extends Component {
   }
 
   state = {
-    error: false
+    error: false,
+    name: '',
+    surname: ''
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
     const {
       name,
       value
@@ -68,12 +70,12 @@ export default class AddMate extends Component {
     } = this.state;
 
     const { callback } = this.props;
-    const userData = name && surname ? this.state : null;
+    const userData = name && surname ? { ...this.state } : null;
 
     if (userData) {
       callback({
-        name: name,
-        surname: surname
+        name,
+        surname
       });
 
       this.setState({
@@ -97,8 +99,8 @@ export default class AddMate extends Component {
   render() {
     const {
       error,
-      name = '',
-      surname = ''
+      name,
+      surname
     } = this.state;
 
     return (
@@ -107,14 +109,14 @@ export default class AddMate extends Component {
           name='name'
           value={ name }
           placeholder='Mate name'
-          onChange={ e => this.handleChange(e) }
+          onChange={ this.handleChange }
         />
 
         <FormInput
           name='surname'
           value={ surname }
           placeholder='Mate surname'
-          onChange={ e => this.handleChange(e) }
+          onChange={ this.handleChange }
         />
 
         <FormSubmit

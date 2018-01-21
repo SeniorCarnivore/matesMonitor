@@ -102,7 +102,7 @@ const exportJson = () => {
   const a = document.createElement('a');
   const file = new Blob([data], {type: 'text/plain'});
   a.href = URL.createObjectURL(file);
-  a.download = 'test.txt';
+  a.download = 'matesMonitorData.txt';
   a.click();
 };
 
@@ -114,15 +114,15 @@ const getJsonFromFile = ( e, callback ) => {
     .then(content => (
       callback(JSON.parse(content))
     ))
-    .catch(error => console.log(error))
+    .catch(error => console.log(error));
 };
 
-function readFileContent(file) {
-	const reader = new FileReader()
+const readFileContent = file => {
+	const reader = new FileReader();
   return new Promise((resolve, reject) => {
-    reader.onload = event => resolve(event.target.result)
-    reader.onerror = error => reject(error)
-    reader.readAsText(file)
+    reader.onload = event => resolve(event.target.result);
+    reader.onerror = error => reject(error);
+    reader.readAsText(file);
   })
 };
 
