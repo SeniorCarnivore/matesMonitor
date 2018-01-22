@@ -49,3 +49,36 @@ export const duplicate = data => {
     return { ...data };
   } 
 };
+
+export const exportJson = () => {
+  const data = JSON.stringify({
+    skills: localStorage.getItem('skills'),
+    mates: localStorage.getItem('mates')
+  });
+
+  const a = document.createElement('a');
+  const file = new Blob([data], {type: 'text/plain'});
+  a.href = URL.createObjectURL(file);
+  a.download = 'matesMonitorData.txt';
+  a.click();
+};
+
+export const getJsonFromFile = (e, callback) => {
+  const { files } = e.target; 
+  const file = files[0];
+
+  readFileContent(file)
+    .then(content => (
+      callback(JSON.parse(content))
+    ))
+    .catch(error => console.log(error));
+};
+
+export const readFileContent = file => {
+	const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.onload = event => resolve(event.target.result);
+    reader.onerror = error => reject(error);
+    reader.readAsText(file);
+  })
+};

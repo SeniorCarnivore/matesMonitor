@@ -241,9 +241,12 @@ export default class App extends Component {
   importJson = data => {
     const fields = Object.keys(data);
 
-    fields.map(filed => {
-      this.updateAppData(filed, JSON.parse(data[filed]));
-      return filed;
+    fields.map(field => {
+      const value = JSON.parse(data[field]);
+      const valueToSet = field === 'skills' ? new Set(value) : value;
+
+      this.updateAppData(field, valueToSet);
+      return field;
     });
   }
 
